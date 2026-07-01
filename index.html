@@ -5,52 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shafir's Study Hall</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #09090b; color: #f4f4f5; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
-        .card { background: #18181b; padding: 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid #27272a; margin-bottom: 20px; }
-        h1 { text-align: center; color: #f4f4f5; font-size: 2rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.05em; }
-        .subtitle { text-align: center; color: #a1a1aa; margin-bottom: 30px; font-size: 1rem; }
+        :root {
+            --bg: #03000a;
+            --card-bg: #0c0714;
+            --border: #2e1a47;
+            --text: #f4f4f5;
+            --text-muted: #a78bfa;
+            --glow: #a78bfa;
+            --accent: #6366f1;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 0 25px rgba(167, 139, 250, 0.15); border: 1px solid var(--border); margin-bottom: 20px; transition: border 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { border-color: var(--glow); box-shadow: 0 0 35px rgba(167, 139, 250, 0.25); }
+        h1 { text-align: center; color: var(--text); font-size: 2.2rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.05em; text-shadow: 0 0 15px rgba(167, 139, 250, 0.6); }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; text-shadow: 0 0 8px rgba(167, 139, 250, 0.3); }
         
         /* Navigation Tabs Styles */
         .nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 30px; }
-        .tab-btn { background: #27272a; color: #d4d4d8; border: 1px solid #3f3f46; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: all 0.2s; }
-        .tab-btn:hover, .tab-btn.active { background: #3f3f46; color: #fff; border-color: #71717a; }
+        .tab-btn { background: #130b21; color: #d4d4d8; border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: all 0.2s ease; }
+        .tab-btn:hover, .tab-btn.active { background: var(--card-bg); color: #fff; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.4); }
         .engine-space { display: none; }
         .engine-space.active { display: block; }
 
         /* MCQ Engine Styles */
-        .progress-bar { height: 4px; width: 100%; background: #27272a; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #f4f4f5; width: 0%; transition: width 0.3s ease; }
-        .stats { display: flex; justify-content: space-between; font-size: 0.85rem; color: #a1a1aa; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .progress-bar { height: 4px; width: 100%; background: #180e2b; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--glow), var(--accent)); width: 0%; box-shadow: 0 0 10px var(--glow); transition: width 0.3s ease; }
+        .stats { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.05em; }
         .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: #f4f4f5; }
-        .option { display: block; background: #27272a; padding: 14px 20px; border-radius: 6px; margin: 10px 0; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-size: 0.95rem; }
-        .option:hover { background: #3f3f46; }
+        .option { display: block; background: #130b21; padding: 14px 20px; border-radius: 8px; margin: 10px 0; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; font-size: 0.95rem; }
+        .option:hover { border-color: var(--glow); background: #1a0f2e; box-shadow: 0 0 12px rgba(167, 139, 250, 0.2); }
         .option input { display: none; }
-        .option.selected { background: #3f3f46; border-color: #71717a; color: #fff; }
-        .btn { display: inline-block; background: #f4f4f5; color: #09090b; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 0.95rem; width: 100%; margin-top: 15px; text-align: center; }
-        .btn:hover { background: #e4e4e7; }
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 6px; font-weight: 600; font-size: 1rem; display: none; text-align: center; }
-        .feedback.correct { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
-        .feedback.wrong { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
-        .fun-fact { background: #18181b; border: 1px solid #27272a; padding: 15px; border-radius: 6px; color: #a1a1aa; font-size: 0.9rem; margin-top: 15px; display: none; }
+        .option.selected { background: #22123b; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.4); color: #fff; }
+        
+        .btn { display: inline-block; background: linear-gradient(135deg, var(--glow), var(--accent)); color: #03000a; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; width: 100%; margin-top: 15px; text-align: center; box-shadow: 0 0 15px rgba(167, 139, 250, 0.3); }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 0 25px rgba(167, 139, 250, 0.6); opacity: 0.95; }
+        
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: 600; font-size: 1rem; display: none; text-align: center; }
+        .feedback.correct { background: rgba(52, 211, 153, 0.08); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); box-shadow: 0 0 15px rgba(52, 211, 153, 0.2); }
+        .feedback.wrong { background: rgba(248, 113, 113, 0.08); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
+        .fun-fact { background: #0c0714; border: 1px solid var(--border); padding: 15px; border-radius: 8px; color: #cbd5e1; font-size: 0.9rem; margin-top: 15px; display: none; }
         .result-screen { text-align: center; display: none; }
-        .score-big { font-size: 3.5rem; font-weight: 700; color: #f4f4f5; margin: 20px 0; }
+        .score-big { font-size: 3.5rem; font-weight: 700; color: #fff; margin: 20px 0; text-shadow: 0 0 20px var(--glow); }
         .status-msg { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
-        .status-bad { color: #f87171; }
-        .status-good { color: #34d399; }
+        .status-bad { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
+        .status-good { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
 
         /* Written Engine Styles */
-        textarea { width: 100%; height: 140px; background: #27272a; color: #fff; border: 1px solid #3f3f46; border-radius: 6px; padding: 12px; font-size: 1rem; resize: vertical; margin-top: 10px; font-family: inherit; box-sizing: border-box; }
-        textarea:focus { outline: none; border-color: #71717a; }
+        textarea { width: 100%; height: 140px; background: #130b21; color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 1rem; resize: vertical; margin-top: 10px; font-family: inherit; box-sizing: border-box; transition: all 0.2s; }
+        textarea:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.3); }
         .comp-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
-        .comp-choice { background: #27272a; padding: 15px; border-radius: 6px; border: 1px solid #3f3f46; cursor: pointer; text-align: left; transition: 0.2s; font-size: 0.95rem; }
-        .comp-choice:hover { border-color: #71717a; }
+        .comp-choice { background: #130b21; padding: 15px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: left; transition: 0.2s; font-size: 0.95rem; }
+        .comp-choice:hover { border-color: var(--glow); box-shadow: 0 0 12px rgba(167, 139, 250, 0.2); }
         .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         @media(max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
-        .pane { background: #27272a; padding: 15px; border-radius: 6px; border: 1px solid #3f3f46; font-size: 0.95rem; }
-        .pane-title { font-weight: 600; color: #a1a1aa; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .checklist { margin-top: 12px; background: #27272a; padding: 12px; border-radius: 6px; border: 1px solid #3f3f46; }
+        .pane { background: #130b21; padding: 15px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; }
+        .pane-title { font-weight: 600; color: var(--text-muted); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .checklist { margin-top: 12px; background: #130b21; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
         .check-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.9rem; color: #d4d4d8; }
-        select { width: 100%; padding: 12px; background: #27272a; color: #fff; border-radius: 6px; border: 1px solid #3f3f46; font-size: 0.95rem; }
+        select { width: 100%; padding: 12px; background: #130b21; color: #fff; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; transition: 0.2s; }
+        select:focus { outline: none; border-color: var(--glow); }
     </style>
 </head>
 <body>
@@ -88,18 +101,18 @@
         </div>
 
         <div id="result-card" class="card result-screen">
-            <h2>মূল্যায়ন সম্পন্ন</h2>
+            <h2>मूल्यांकन সম্পন্ন</h2>
             <div class="score-big" id="final-score">০ / ১৫</div>
             <div id="verdict-msg" class="status-msg"></div>
             <button class="btn" id="review-btn" onclick="startMistakeFix()">ভুলসমূহ সংশোধন করুন</button>
-            <button class="btn" style="background:#27272a; color:#fff; border: 1px solid #3f3f46; margin-top:10px;" onclick="resetQuiz()">পুনরায় পরীক্ষা দিন</button>
+            <button class="btn" style="background:#130b21; color:#fff; border: 1px solid var(--border); margin-top:10px;" onclick="resetQuiz()">পুনরায় পরীক্ষা দিন</button>
         </div>
     </div>
 
     <!-- MODULE 2: COMPREHENSION (PAGE 92) -->
     <div id="comprehension-section" class="card engine-space">
         <h3>অনুধাবন শক্তি ও প্রশ্নোত্তর (পৃষ্ঠা ৯২)</h3>
-        <p style="color: #a1a1aa; font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে প্রশ্নটির উত্তর প্রদান করো।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে প্রশ্নটির উত্তর প্রদান করো।</p>
         <div class="pane" style="margin-bottom: 15px;">
             <strong>অনুচ্ছেদ:</strong> "প্রাতিষ্ঠানিক শিক্ষার উপযোগ বহুমাত্রিক। শুধু জ্ঞান পরিবেশন নয়, দক্ষ মানবসম্পদ গড়ে তোলার মাধ্যমে সমৃদ্ধ জাতিগঠন এই শিক্ষার মূল উদ্দেশ্য। একই সাথে মানবিক ও বিজ্ঞানমনস্ক সমাজগঠন নিশ্চিত করার প্রধান অবলম্বনও প্রাতিষ্ঠানিক শিক্ষা।"
         </div>
@@ -112,7 +125,7 @@
     <!-- MODULE 3: SUMMARY (PAGE 93) -->
     <div id="summary-section" class="card engine-space">
         <h3>সারাংশ ও সারমর্ম (পৃষ্ঠা ৯৩)</h3>
-        <p style="color: #a1a1aa; font-size:0.9rem;">অনুশীলনের জন্য একটি বিভাগ নির্বাচন করুন।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">অনুশীলনের জন্য একটি বিভাগ নির্বাচন করুন।</p>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
             <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('story')">সারাংশ (গদ্য)</button>
             <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('poem')">সারমর্ম (পদ্য)</button>
@@ -129,7 +142,7 @@
     <!-- MODULE 4: EXPANSION (PAGE 97) -->
     <div id="expansion-section" class="card engine-space">
         <h3>ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭: ৩.১ - ৩.৫)</h3>
-        <p style="color: #a1a1aa; font-size:0.9rem;">যেকোনো একটি মূল চরণ নির্বাচন করে অনুশীলন শুরু করুন।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">যেকোনো একটি মূল চরণ নির্বাচন করে অনুশীলন শুরু করুন।</p>
         <select id="expansion-select" onchange="loadExpansionPrompt()">
             <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করুন --</option>
             <option value="3.1">৩.১: "পরিশ্রম সৌভাগ্যের প্রসূতি"</option>
@@ -149,7 +162,7 @@
                 </div>
                 <div class="pane">
                     <div class="pane-title">পাঠ্যবই/গাইডভিত্তিক আদর্শ কাঠামো</div>
-                    <p id="expansion-guide-pane" style="color:#a1a1aa;"></p>
+                    <p id="expansion-guide-pane" style="color:var(--text-muted);"></p>
                 </div>
             </div>
         </div>
@@ -158,7 +171,7 @@
     <!-- MODULE 5: LETTERS (PAGE 102-106) -->
     <div id="letters-section" class="card engine-space">
         <h3>পত্র রচনা (পৃষ্ঠা ১০২-১০৬)</h3>
-        <p style="color: #a1a1aa; font-size:0.9rem;">পত্রের প্রকারভেদ অনুযায়ী কাঠামো ঠিক রেখে অনুশীলন করুন।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">পত্রের প্রকারভেদ অনুযায়ী কাঠামো ঠিক রেখে অনুশীলন করুন।</p>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
             <button class="tab-btn" style="width:50%;" onclick="loadLetter('102')">ব্যক্তিগত পত্র (পৃষ্ঠা ১০২)</button>
             <button class="tab-btn" style="width:50%;" onclick="loadLetter('106')">আবেদন পত্র (পৃষ্ঠা ১০৬)</button>
@@ -174,8 +187,8 @@
     <!-- MODULE 6: COMPOSITION (PAGE 112+) -->
     <div id="composition-section" class="card engine-space">
         <h3>প্রবন্ধ রচনা (পৃষ্ঠা ১১২+: র্যান্ডম ৩ সিলেকশন)</h3>
-        <p style="color: #a1a1aa; font-size:0.9rem;">প্রথম ৭টি রচনার মধ্য থেকে স্বয়ংক্রিয়ভাবে ৩টি বিকল্প দেওয়া হলো। যেকোনো একটি বেছে নিন।</p>
-        <button class="btn" style="background:#27272a; color:#fff; border: 1px solid #3f3f46; margin-bottom:15px;" onclick="generateRandomCompositions()">৩টি প্রবন্ধ র্যান্ডমাইজ করুন</button>
+        <p style="color: var(--text-muted); font-size:0.9rem;">প্রথম ৭টি রচনার মধ্য থেকে স্বয়ংক্রিয়ভাবে ৩টি বিকল্প দেওয়া হলো। যেকোনো একটি বেছে নিন।</p>
+        <button class="btn" style="background:#130b21; color:#fff; border: 1px solid var(--border); margin-bottom:15px;" onclick="generateRandomCompositions()">৩টি প্রবন্ধ র্যান্ডমাইজ করুন</button>
         
         <div class="comp-options" id="comp-options-space"></div>
 
@@ -184,7 +197,7 @@
             <textarea id="comp-user-input" style="height:250px;" oninput="updateCompChecklist()" placeholder="ভূমিকা, মূল প্যারাগ্রাফ এবং উপসংহার স্পষ্টভাবে আলাদা করে লিখুন..."></textarea>
             
             <div class="checklist">
-                <div class="pane-title" style="color:#a1a1aa; font-size:0.8rem;">প্রবন্ধের কাঠামো ট্র্যাকার</div>
+                <div class="pane-title" style="color:var(--text-muted); font-size:0.8rem;">প্রবন্ধের কাঠামো ট্র্যাকার</div>
                 <div class="check-item"><input type="checkbox" id="chk-intro" disabled> <span><strong>ভূমিকা অংশ:</strong> প্রারম্ভিক সূচনা অনুচ্ছেদ চিহ্নিত।</span></div>
                 <div class="check-item"><input type="checkbox" id="chk-body" disabled> <span><strong>মূল বিষয়বস্তু:</strong> পয়েন্ট বা বিস্তারিত আলোচনা চিহ্নিত (ন্যূনতম দৈর্ঘ্য)।</span></div>
                 <div class="check-item"><input type="checkbox" id="chk-conclusion" disabled> <span><strong>উপসংহার অংশ:</strong> সমাপ্তি অনুচ্ছেদ চিহ্নিত।</span></div>
@@ -195,7 +208,6 @@
     </div>
 
     <script>
-        // 1. SECTION TOGGLER ROUTINE
         function switchSection(sectionId) {
             document.querySelectorAll('.engine-space').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tabs .tab-btn').forEach(el => el.classList.remove('active'));
@@ -203,7 +215,6 @@
             event.currentTarget.classList.add('active');
         }
 
-        // 2. DATA MANAGEMENT (15 HIGH-YIELD QUESTIONS)
         const masterQuestionBank = [
             { q: "ড. সুনীতিকুমার চট্টোপাধ্যায়ের সংজ্ঞা অনুযায়ী, ভাষার মূল উপাদান কোনটি যা বাক্যে প্রযুক্ত হয়?", options: ["ইশারা বা অঙ্গভঙ্গি", "বাগ্যন্ত্রের সাহায্যে উচ্চারিত অর্থপূর্ণ শব্দসমষ্টি", "পশু-পাখির স্বাভাবিক ডাক", "লৈখিক চিহ্নের জ্যামিতিক নকশা"], correct: 1 },
             { q: "পৃথিবীতে বর্তমানে প্রায় কতগুলো ভাষা প্রচলিত আছে বলে বইয়ে উল্লেখ আছে?", options: ["প্রায় আড়াই হাজার", "প্রায় সাড়ে তিন হাজার", "প্রায় চার হাজার", "প্রায় পাঁচ হাজার"], correct: 1 },
@@ -213,13 +224,13 @@
             { q: "কোন ভাষারীতি অধিকতর গাম্ভীর্যপূর্ণ, তৎসম শব্দবহুল এবং ক্রিয়াপদের রূপ প্রাচীন রীতি অনুসারী?", options: ["চলিত রীতি", "প্রমিত কথ্য রীতি", "সাধু ভাষারীতি", "আঞ্চলিক রীতি"], correct: 2 },
             { q: "বাংলা ভাষায় মৌলিক স্বরধ্বনি কয়টি?", options: ["১১টি", "৭টি", "৩৯টি", "৫০টি"], correct: 1 },
             { q: "বাংলা বর্ণমালায় মোট কয়টি বর্ণ রয়েছে এবং এর মধ্যে স্বরবর্ণ কয়টি?", options: ["৫০টি বর্ণ, ১১টি স্বরবর্ণ", "৩৯টি বর্ণ, ৭টি স্বরবর্ণ", "৫০টি বর্ণ, ১০টি স্বরবর্ণ", "৪৯টি বর্ণ, ১১টি স্বরবর্ণ"], correct: 0 },
-            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, ৬টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
+            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, 六টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
             { q: "উচ্চারণস্থান অনুসারে 'ঋ, ট, ঠ, ড, ঢ, ণ, র, ল' বর্ণগুলোকে কী বলা হয়?", options: ["তালব্য বর্ণ", "ওষ্ঠ্য বর্ণ", "মূর্ধন্য বর্ণ", "দন্ত্য বর্ণ"], correct: 2 },
-            { q: "পদের প্রথমে ম-ফলা থাকলে উচ্চারণের ওপর কী प्रभाव পড়ে?", options: ["বর্ণটির দ্বিত্ব উচ্চারণ হয়", "বর্ণের উচ্চারণে কিছুটা ঝোঁক পড়ে এবং সামান্য নাসিক্যস্বর হয়", "ম-এর উচ্চারণ সম্পূর্ণ অক্ষুণ্ণ থাকে", "উচ্চারণ লোপ পেয়ে ও-কার হয়"], correct: 1 },
+            { q: "পদের প্রথমে ম-ফলা থাকলে উচ্চারণের ওপর কী প্রভাব পড়ে?", options: ["বর্ণটির দ্বিত্ব উচ্চারণ হয়", "বর্ণের উচ্চারণে কিছুটা ঝোঁক পড়ে এবং সামান্য নাসিক্যস্বর হয়", "ম-এর উচ্চারণ সম্পূর্ণ অক্ষুণ্ণ থাকে", "উচ্চারণ লোপ পেয়ে ও-কার হয়"], correct: 1 },
             { q: "পাশাপাশি অবস্থিত দুটো ধ্বনির মিলনের ফলে যদি এক ধ্বনি সৃষ্টি হয়, তাকে কী বলে?", options: ["কার", "ফলা", "সন্ধি", "সমাস"], correct: 2 },
             { q: "সন্ধি প্রধানত কয় ধরনের হয়ে থাকে?", options: ["দুই ধরনের (স্বর ও ব্যঞ্জন)", "তিন ধরনের", "চার ধরনের", "পাঁচ ধরনের"], correct: 0 },
             { q: "ক্রিয়াপদের মূল অংশকে কী বলা হয় যা বিশ্লেষণ করা যায় না?", options: ["উপসর্গ", "ধাতু", "নির্দেশক", "অনুকার"], correct: 1 },
-            { q: "ক্রিয়া সম্পাদনের সময়কে কী বলা হয়?", options: ["ক্রিয়ার ভাব", "ক্রিয়ার কাল", "ক্রিয়ার রূপ", "ধাতুর গঠন"], correct: 1 }
+            { q: "ক্রিয়া সম্পাদনের সময়কে কী বলা হয়?", options: ["ক্রিয়ার ভাব", "ক্রিয়ার কাল", "ক্রিয়ার রূপ", "ধাতুর গঠন"], correct: 1 }
         ];
 
         const funFacts = [
@@ -260,7 +271,6 @@
         let wrongAnswersTracker = [];
         let isMistakeFixMode = false;
 
-        // 3. MCQ ENGINE LOGIC
         function initQuiz() {
             currentQuestions = [...masterQuestionBank];
             currentIndex = 0;
@@ -391,7 +401,6 @@
         }
         function resetQuiz() { initQuiz(); }
 
-        // 4. WRITTEN MODULES JAVASCRIPT ENGINE
         function evaluateComprehension() {
             const answer = document.getElementById("comp-answer").value.trim();
             const feedback = document.getElementById("comp-feedback");
@@ -420,7 +429,7 @@
             if(input.length < 10) { alert("অনুগ্রহ করে উত্তর বাক্সে লিখুন।"); return; }
             const matched = summaryData[activeSummaryType].keywords.filter(kw => input.includes(kw));
             feedback.style.display = "block";
-            feedback.innerHTML = `🤖 <strong>কাঠামো বিশ্লেষণ:</strong><br>চিহ্নিত মূল শব্দসমূহ: <strong>${matched.length > 0 ? matched.join(', ') : 'নেই'}</strong><br><br><span style='color:#a1a1aa;'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
+            feedback.innerHTML = `🤖 <strong>কাঠামো বিশ্লেষণ:</strong><br>চিহ্নিত মূল শব্দসমূহ: <strong>${matched.length > 0 ? matched.join(', ') : 'নেই'}</strong><br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
         }
 
         function loadExpansionPrompt() {
@@ -498,7 +507,6 @@
             }
         }
 
-        // Boot MCQ Engine on load
         initQuiz();
     </script>
 </body>
