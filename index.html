@@ -112,14 +112,24 @@
     <!-- MODULE 2: COMPREHENSION (PAGE 92) -->
     <div id="comprehension-section" class="card engine-space">
         <h3>অনুধাবন শক্তি ও প্রশ্নোত্তর (পৃষ্ঠা ৯২)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে প্রশ্নটির উত্তর প্রদান করো।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে ৪টি প্রশ্নের উত্তর ক্রমানুসারে প্রদান করো।</p>
         <div class="pane" style="margin-bottom: 15px;">
             <strong>অনুচ্ছেদ:</strong> "প্রাতিষ্ঠানিক শিক্ষার উপযোগ বহুমাত্রিক। শুধু জ্ঞান পরিবেশন নয়, দক্ষ মানবসম্পদ গড়ে তোলার মাধ্যমে সমৃদ্ধ জাতিগঠন এই শিক্ষার মূল উদ্দেশ্য। একই সাথে মানবিক ও বিজ্ঞানমনস্ক সমাজগঠন নিশ্চিত করার প্রধান অবলম্বনও প্রাতিষ্ঠানিক শিক্ষা।"
         </div>
-        <strong>প্রশ্ন: প্রাতিষ্ঠানিক শিক্ষার মূল উদ্দেশ্য কী এবং কেন এটি জরুরি?</strong>
-        <textarea id="comp-answer" placeholder="আপনার উত্তর এখানে লিখুন..."></textarea>
-        <button class="btn" onclick="evaluateComprehension()">উত্তর যাচাই করুন</button>
-        <div id="comp-feedback" style="display:none; margin-top:15px;" class="pane"></div>
+        
+        <div id="comp-engine">
+            <div class="stats"><span id="comp-q-num">প্রশ্ন: ১/৪</span><span id="comp-score-num">স্কোর: ০/৫</span></div>
+            <div class="pane" id="comp-question-display" style="font-weight:600; margin-bottom:10px;"></div>
+            <textarea id="comp-answer" placeholder="আপনার উত্তর এখানে লিখুন..."></textarea>
+            <button class="btn" id="comp-next-btn" onclick="submitCompAnswer()">উত্তর জমা দিন</button>
+            <div id="comp-feedback" style="display:none; margin-top:15px;" class="pane"></div>
+        </div>
+        
+        <div id="comp-result" style="display:none; text-align:center;">
+            <h4>অনুধাবন মূল্যায়ন সম্পন্ন!</h4>
+            <div class="score-big" id="comp-final-score">০ / ৫</div>
+            <button class="btn" onclick="resetCompEngine()">পুনরায় চেষ্টা করুন</button>
+        </div>
     </div>
 
     <!-- MODULE 3: SUMMARY (PAGE 93) -->
@@ -131,9 +141,9 @@
             <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('poem')">সারমর্ম (পদ্য)</button>
         </div>
         <div id="summary-prompt-area" style="display:none;">
-            <div class="pane" id="summary-text-pane" style="margin-bottom:15px; font-style:italic;"></div>
+            <div class="pane" id="summary-text-pane" style="margin-bottom:15px; font-style:italic; font-size:1.05rem; background:#130b21; border-color:var(--border);"></div>
             <strong>আপনার উত্তর লিখুন:</strong>
-            <textarea id="summary-user-input" placeholder="মূল ভাবটি সংক্ষেপে ফুটিয়ে তুলুন..."></textarea>
+            <textarea id="summary-user-input" style="height:150px;" placeholder="মূল ভাবটি সংক্ষেপে ফুটিয়ে তুলুন..."></textarea>
             <button class="btn" onclick="evaluateSummary()">মূল্যায়ন করুন</button>
             <div id="summary-feedback" style="display:none; margin-top:15px;" class="pane"></div>
         </div>
@@ -142,15 +152,18 @@
     <!-- MODULE 4: EXPANSION (PAGE 97) -->
     <div id="expansion-section" class="card engine-space">
         <h3>ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭: ৩.১ - ৩.৫)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">যেকোনো একটি মূল চরণ নির্বাচন করে অনুশীলন শুরু করুন।</p>
-        <select id="expansion-select" onchange="loadExpansionPrompt()">
-            <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করুন --</option>
-            <option value="3.1">৩.১: "পরিশ্রম সৌভাগ্যের প্রসূতি"</option>
-            <option value="3.2">৩.২: "দুর্জন বিদ্বান হইলেও পরিত্যাজ্য"</option>
-            <option value="3.3">৩.৩: "স্বদেশপ্রেমই প্রকৃত মানুষের ধর্ম"</option>
-            <option value="3.4">৩.৪: "অন্যায় যে করে আর অন্যায় যে সহে"</option>
-            <option value="3.5">৩.৫: "জ্ঞানের চেয়ে মহৎ গুণ আর নাই"</option>
-        </select>
+        <p style="color: var(--text-muted); font-size:0.9rem;">ড্রপডাউন থেকে নির্বাচন করুন অথবা র্যান্ডমাইজ বাটন চাপুন।</p>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <select id="expansion-select" style="width:70%;" onchange="loadExpansionPrompt()">
+                <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করুন --</option>
+                <option value="3.1">৩.১: "পরিশ্রম সৌভাগ্যের প্রসূতি"</option>
+                <option value="3.2">৩.২: "দুর্জন বিদ্বান হইলেও পরিত্যাজ্য"</option>
+                <option value="3.3">৩.৩: "স্বদেশপ্রেমই প্রকৃত মানুষের ধর্ম"</option>
+                <option value="3.4">৩.৪: "অন্যায় যে করে আর অন্যায় যে সহে"</option>
+                <option value="3.5">৩.৫: "জ্ঞানের চেয়ে মহৎ গুণ আর নাই"</option>
+            </select>
+            <button class="btn" style="width:30%; margin-top:0;" onclick="randomizeExpansion()">🎲 র্যান্ডমাইজ</button>
+        </div>
         <div id="expansion-work-area" style="display:none; margin-top:15px;">
             <div class="pane" id="expansion-prompt-display" style="font-weight:600; margin-bottom:10px;"></div>
             <textarea id="expansion-user-input" placeholder="আপনার ভাব-সম্প্রসারণ (মূলভাব, সম্প্রসারিত ভাব, মন্তব্য) এখানে বিস্তারিত লিখুন..."></textarea>
@@ -248,7 +261,7 @@
         const summaryData = {
             story: {
                 text: "সারাংশ অনুচ্ছেদ: 'প্রকৃত জ্ঞানের অধিকারী ব্যক্তি কখনো অহংকার করেন না। যেমন ফলভর্তি গাছের শাখা সবসময় নিচের দিকে নুয়ে থাকে, তেমনি গুণী মানুষও সমাজের বুকে মাথা নিচু করে বিনয়ী থাকেন।'",
-                keywords: ["জ্ঞান", "বিনয়", "অহংকার", "গুণী"]
+                keywords: ["ज्ञान", "বিনয়", "অহংকার", "গুণী"]
             },
             poem: {
                 text: "সারমর্ম কবিতা চরণ: \n'পরের কারণে স্বার্থ দিয়া বলি\nএ জীবন মন সকলি দাও,\nতার চেয়ে সুখ কিছু নাই আর\nআপনার কথা ভুলিয়া যাও।'",
@@ -260,9 +273,16 @@
             "3.1": "বিশ্লেষণ: পরিশ্রমই মানুষের ভাগ্যের নিয়ন্তা। অলসতা উন্নতির প্রধান অন্তরায়। জীবনের প্রতিটি ক্ষেত্রে সফলতার মূল চাবিকাঠি হলো নিরবচ্ছিন্ন শ্রম ও নিষ্ঠা।",
             "3.2": "বিশ্লেষণ: কোনো ব্যক্তি যতই শিক্ষিত বা পণ্ডিত হোক না কেন, সে যদি অসৎ চরিত্রের অধিকারী হয়, তবে তাকে বর্জন করা শ্রেয়। মণিধারী সাপও অনিষ্টকারী হতে পারে।",
             "3.3": "বিশ্লেষণ: স্বদেশের প্রতি গভীর ভালোবাসাই প্রকৃত মানুষের ধর্ম। দেশের আলো-বাতাসে লালিত হয়ে তার প্রতি কৃতজ্ঞ থাকা ও সেবায় আত্মনিয়োগ করা মনুষ্যত্বের পরিচায়ক।",
-            "3.4": "বিশ্লেষণ: অন্যায় করা যেমন অপরাধ, অন্যায়কে নীরবে সহ্য করাও সমমানের অপরাধ। অন্যায়ের বিরুদ্ধে প্রতিবাদ না করলে সমাজে নেতিবাচক শক্তির বিস্তার ঘটে।",
+            "3.4": "বিশ্লেষণ: অন্যায় করা যেমন অপরাধ, অন্যায়কে নীরবে সহ্য করাও সমমানের অপরাধ। অন্যায়ের বিরুদ্ধে প্রতিবাদ না করলে সমাজে নেতিবাচক শক্তির বিস্তার ঘটে।",
             "3.5": "বিশ্লেষণ: মানবসমাজে সবচেয়ে বড় ভূষণ হলো জ্ঞান। জ্ঞান অর্জনের মাধ্যমে মানুষ নিজেকে এবং সমাজকে উন্নত ও প্রগতিশীল স্তরে উন্নীত করতে সক্ষম হয়।"
         };
+
+        const comprehensionQuestions = [
+            { q: "১. অনুচ্ছেদ অনুসারে প্রাতিষ্ঠানিক শিক্ষার প্রথম উপযোগটি কী?", keywords: ["জ্ঞান", "পরিবেশন"], pts: 1 },
+            { q: "২. সমৃদ্ধ জাতিগঠন কীভাবে সম্ভব হতে পারে?", keywords: ["দক্ষ", "মানবসম্পদ"], pts: 1 },
+            { q: "৩. মানবিক সমাজ নিশ্চিত করার প্রধান অবলম্বন কী?", keywords: ["প্রাতিষ্ঠানিক", "শিক্ষা"], pts: 1 },
+            { q: "৪. অনুচ্ছেদের মূল ভাবটির আলোকে শিক্ষা ও সমাজ গঠনের সম্পর্ক ব্যাখ্যা করো।", keywords: ["বিজ্ঞানমনস্ক", "উপযোগ", "সমাজ"], pts: 2 }
+        ];
 
         let currentQuestions = [];
         let currentIndex = 0;
@@ -270,6 +290,11 @@
         let selectedOptionIndex = null;
         let wrongAnswersTracker = [];
         let isMistakeFixMode = false;
+
+        // Comprehension State Variables
+        let compIndex = 0;
+        let compScore = 0;
+        let compStage = 'question'; 
 
         function initQuiz() {
             currentQuestions = [...masterQuestionBank];
@@ -401,20 +426,68 @@
         }
         function resetQuiz() { initQuiz(); }
 
-        function evaluateComprehension() {
+        // MODULE 2: COMPREHENSION 4-QUESTION SYSTEM
+        function loadCompQuestion() {
+            document.getElementById("comp-feedback").style.display = "none";
+            document.getElementById("comp-answer").value = "";
+            
+            const currentQ = comprehensionQuestions[compIndex];
+            document.getElementById("comp-q-num").innerText = `প্রশ্ন: ${compIndex + 1} / ৪ (${currentQ.pts} নম্বর)`;
+            document.getElementById("comp-score-num").innerText = `স্কোর: ${compScore} / ৫`;
+            document.getElementById("comp-question-display").innerText = currentQ.q;
+            
+            const btn = document.getElementById("comp-next-btn");
+            btn.innerText = "উত্তর জমা দিন";
+            compStage = 'question';
+        }
+
+        function submitCompAnswer() {
+            const btn = document.getElementById("comp-next-btn");
             const answer = document.getElementById("comp-answer").value.trim();
             const feedback = document.getElementById("comp-feedback");
-            if(answer.length < 15) { alert("উত্তরের পরিধি বৃদ্ধি করুন।"); return; }
-            feedback.style.display = "block";
-            if(answer.includes("উদ্দেশ্য") && (answer.includes("মানবসম্পদ") || answer.includes("জাতিগঠন"))) {
-                feedback.innerHTML = "🎯 <strong>মূল্যায়ন:</strong> মূল কি-ওয়ার্ডসমূহ চিহ্নিত হয়েছে। উত্তরটি সঠিক ও মানসম্মত।";
-                feedback.style.borderColor = "#34d399";
+            const currentQ = comprehensionQuestions[compIndex];
+
+            if (compStage === 'question') {
+                if (answer.length < 5) { alert("অনুগ্রহ করে একটি পূর্ণাঙ্গ উত্তর প্রদান করুন।"); return; }
+                
+                feedback.style.display = "block";
+                const isCorrect = currentQ.keywords.some(kw => answer.includes(kw));
+                
+                if (isCorrect) {
+                    compScore += currentQ.pts;
+                    feedback.className = "pane";
+                    feedback.style.borderColor = "#34d399";
+                    feedback.innerHTML = `🎯 <strong>সঠিক উত্তর!</strong> (+${currentQ.pts} পয়েন্ট)<br>মূল শব্দগুলো চিহ্নিত হয়েছে।`;
+                } else {
+                    feedback.className = "pane";
+                    feedback.style.borderColor = "#f87171";
+                    feedback.innerHTML = `⚠️ <strong>আংশিক/ভুল উত্তর।</strong> (+০ পয়েন্ট)<br>পরামর্শ: আপনার উত্তরে "${currentQ.keywords.join(', ')}" যুক্ত করা উচিত ছিল।`;
+                }
+                
+                document.getElementById("comp-score-num").innerText = `স্কোর: ${compScore} / ৫`;
+                btn.innerText = (compIndex < 3) ? "পরবর্তী প্রশ্ন" : "ফলাফল দেখুন";
+                compStage = 'feedback';
             } else {
-                feedback.innerHTML = "⚠️ <strong>মূল্যায়ন:</strong> উত্তরটি আংশিক হয়েছে। 'দক্ষ মানবসম্পদ' এবং 'সমৃদ্ধ জাতিগঠন' পয়েন্ট দুটি সংযুক্ত করার পরামর্শ রইল।";
-                feedback.style.borderColor = "#f87171";
+                compIndex++;
+                if (compIndex < 4) {
+                    loadCompQuestion();
+                } else {
+                    document.getElementById("comp-engine").style.display = "none";
+                    document.getElementById("comp-result").style.display = "block";
+                    document.getElementById("comp-final-score").innerText = `${compScore} / ৫`;
+                }
             }
         }
 
+        function resetCompEngine() {
+            compIndex = 0;
+            compScore = 0;
+            document.getElementById("comp-engine").style.display = "block";
+            document.getElementById("comp-result").style.display = "none";
+            loadCompQuestion();
+        }
+
+        // MODULE 3: SUMMARY
         let activeSummaryType = '';
         function loadSummaryType(type) {
             activeSummaryType = type;
@@ -426,20 +499,39 @@
         function evaluateSummary() {
             const input = document.getElementById("summary-user-input").value.trim();
             const feedback = document.getElementById("summary-feedback");
-            if(input.length < 10) { alert("অনুগ্রহ করে উত্তর বাক্সে লিখুন।"); return; }
+            if(input.length < 15) { alert("উত্তরের পরিধি বৃদ্ধি করুন (কমপক্ষে ১৫টি অক্ষর)।"); return; }
+            
             const matched = summaryData[activeSummaryType].keywords.filter(kw => input.includes(kw));
             feedback.style.display = "block";
-            feedback.innerHTML = `🤖 <strong>কাঠামো বিশ্লেষণ:</strong><br>চিহ্নিত মূল শব্দসমূহ: <strong>${matched.length > 0 ? matched.join(', ') : 'নেই'}</strong><br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
+            feedback.className = "pane";
+            
+            if (matched.length >= 2) {
+                feedback.style.borderColor = "#34d399";
+                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন:</strong><br>আপনার সারাংশ কাঠামোগতভাবে সফল। মূল ভাবটি সঠিকভাবে প্রকাশ পেয়েছে।<br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
+            } else {
+                feedback.style.borderColor = "#f87171";
+                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ:</strong><br>মূল ভাবটি সম্পূর্ণ ফুটে ওঠেনি। অনুচ্ছেদের মূল উদ্দেশ্য এবং সারমর্মকে আরও গুরুত্ব সহকারে ফুটিয়ে তোলার চেষ্টা করুন।`;
+            }
         }
 
+        // MODULE 4: BHABSHOMPROSHARON WITH RANDOMIZER
         function loadExpansionPrompt() {
             const code = document.getElementById("expansion-select").value;
             if(!code) { document.getElementById("expansion-work-area").style.display = "none"; return; }
             document.getElementById("expansion-work-area").style.display = "block";
-            document.getElementById("expansion-prompt-display").innerText = `নির্বাচিত চরণ: ${document.getElementById("expansion-select").options[document.getElementById("expansion-select").selectedIndex].text}`;
+            document.getElementById("expansion-prompt-display").innerText = ` his নির্বাচিত चरण: ${document.getElementById("expansion-select").options[document.getElementById("expansion-select").selectedIndex].text}`;
             document.getElementById("expansion-comparison").style.display = "none";
             document.getElementById("expansion-user-input").value = "";
         }
+
+        function randomizeExpansion() {
+            const selectEl = document.getElementById("expansion-select");
+            const validOptions = Array.from(selectEl.options).filter(opt => opt.value !== "");
+            const randomOpt = validOptions[Math.floor(Math.random() * validOptions.length)];
+            selectEl.value = randomOpt.value;
+            loadExpansionPrompt();
+        }
+
         function evaluateExpansion() {
             const code = document.getElementById("expansion-select").value;
             const input = document.getElementById("expansion-user-input").value.trim();
@@ -449,6 +541,7 @@
             document.getElementById("expansion-guide-pane").innerText = expansionGuides[code];
         }
 
+        // MODULE 5: LETTERS
         function loadLetter(page) {
             document.getElementById("letter-work-area").style.display = "block";
             document.getElementById("letter-feedback").style.display = "none";
@@ -466,6 +559,7 @@
             feedback.innerHTML = `📊 <strong>কাঠামো ট্র্যাকিং:</strong> পত্রে অত্যাবশ্যক উপাদান [${elements.join(', ')}] সনাক্ত হয়েছে।<br><br><em>স্মর্তব্য: পরীক্ষার খাতায় পত্রের নির্দিষ্ট ফরম্যাট বজায় রাখা জরুরি।</em>`;
         }
 
+        // MODULE 6: COMPOSITION
         let activeCompTitle = "";
         function generateRandomCompositions() {
             const shuffled = [...compositionsList].sort(() => 0.5 - Math.random());
@@ -507,7 +601,9 @@
             }
         }
 
+        // Initialize Engines
         initQuiz();
+        loadCompQuestion();
     </script>
 </body>
 </html>
