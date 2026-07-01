@@ -1,83 +1,292 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shafir's Study Dash</title>
+    <title>Shafir's 8th Grade Bangla 2nd Master Dash</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: #fff; max-width: 600px; margin: 40px auto; padding: 20px; }
-        .card { background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .btn { background: #7289da; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .btn:hover { background: #5b73c7; }
-        input[type="text"] { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #2a2a2a; color: white; }
-        .option { display: block; margin: 10px 0; cursor: pointer; }
-        .feedback { margin-top: 15px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f12; color: #e4e4e7; max-width: 700px; margin: 30px auto; padding: 20px; line-height: 1.6; }
+        .card { background: #18181c; padding: 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); border: 1px solid #27272a; margin-bottom: 20px; transition: all 0.3s ease; }
+        h1 { text-align: center; color: #a78bfa; font-size: 2.2rem; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #71717a; margin-bottom: 25px; font-style: italic; }
+        .progress-bar { height: 6px; width: 100%; background: #27272a; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #8b5cf6, #ec4899); width: 0%; transition: width 0.3s ease; }
+        .stats { display: flex; justify-content: space-between; font-size: 0.9rem; color: #a1a1aa; margin-bottom: 15px; }
+        .question { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; color: #f4f4f5; }
+        .option { display: block; background: #27272a; padding: 14px 20px; border-radius: 8px; margin: 10px 0; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+        .option:hover { background: #3f3f46; border-color: #52525b; }
+        .option input { display: none; }
+        .option.selected { background: #4c1d95; border-color: #8b5cf6; color: #fff; }
+        .btn { display: inline-block; background: #7c3aed; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.2s; font-size: 1rem; width: 100%; margin-top: 15px; text-align: center; }
+        .btn:hover { background: #6d28d9; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: none; text-align: center; }
+        .feedback.correct { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; }
+        .feedback.wrong { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #dc2626; }
+        .fun-fact { background: #1e1b4b; border: 1px solid #312e81; padding: 15px; border-radius: 8px; color: #c084fc; font-size: 0.95rem; margin-top: 15px; display: none; }
+        .result-screen, .review-screen { text-align: center; display: none; }
+        .score-big { font-size: 3.5rem; font-weight: 800; color: #a78bfa; margin: 20px 0; }
+        .status-msg { font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; }
+        .status-bad { color: #ef4444; }
+        .status-good { color: #34d399; }
     </style>
 </head>
 <body>
 
-    <h1>🧠 Study Station</h1>
-    <div class="card" id="quiz-container">
-        <h3 id="question-text">Loading question...</h3>
-        <div id="answers-container"></div>
-        <button class="btn" id="submit-btn" onclick="checkAnswer()">Submit</button>
-        <p class="feedback" id="feedback-text"></p>
+    <h1>🧠 Shafir's Master Study Station</h1>
+    <div class="subtitle">৮ম শ্রেণি - বাংলা ২য় পত্র (ব্যাকরণ অধ্যায় ১-৪ হার্ডকোর কুইজ) 🥀</div>
+
+    <!-- MAIN QUIZ INTERFACE -->
+    <div id="quiz-card" class="card">
+        <div class="stats">
+            <span id="question-count">প্রশ্ন: ১/৩০</span>
+            <span id="score-count">স্কোর: ০</span>
+        </div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        
+        <div id="question-area">
+            <div id="question-text" class="question">লোডিং...</div>
+            <div id="options-container"></div>
+        </div>
+
+        <button class="btn" id="action-btn" onclick="processActionButton()">উত্তর জমা দিন</button>
+        <div id="feedback-box" class="feedback"></div>
+        <div id="fact-box" class="fun-fact"></div>
+    </div>
+
+    <!-- RESULT & REVIEW INTERFACE -->
+    <div id="result-card" class="card result-screen">
+        <h2>পরীক্ষা শেষ, ব্রো! ✌️😭</h2>
+        <div class="score-big" id="final-score">০ / ৩০</div>
+        <div id="verdict-msg" class="status-msg"></div>
+        <button class="btn" id="review-btn" onclick="startMistakeFix()">ভুলগুলো সংশোধন করো (Fix Mistakes) 🛠️</button>
+        <button class="btn" style="background:#3f3f46; margin-top:10px;" onclick="resetQuiz()">শুরু থেকে আবার দাও (Do Again)</button>
     </div>
 
     <script>
-        const quizData = [
-            { type: "mcq", q: "What language does Roblox use?", options: ["Python", "Luau", "C++", "Java"], correct: "Luau" },
-            { type: "sa", q: "What is 15 multiplied by 4?", correct: "60" }
+        // 30 High-level questions built from NCTB Chapter 1 to 4[cite: 1]
+        const masterQuestionBank = [
+            // Chapter 1.1, 1.2, 1.3[cite: 1]
+            { q: "ড. সুনীতিকুমার চট্টোপাধ্যায়ের সংজ্ঞা অনুযায়ী, ভাষার মূল উপাদান কোনটি যা বাক্যে প্রযুক্ত হয়?", options: ["ইশারা বা অঙ্গভঙ্গি", "বাগ্যন্ত্রের সাহায্যে উচ্চারিত অর্থপূর্ণ শব্দসমষ্টি", "পশু-পাখির স্বাভাবিক ডাক", "লৈখিক চিহ্নের জ্যামিতিক নকশা"], correct: 1 },
+            { q: "পৃথিবীতে বর্তমানে প্রায় কতগুলো ভাষা প্রচলিত আছে বলে বইয়ে উল্লেখ আছে?", options: ["প্রায় আড়াই হাজার", "প্রায় সাড়ে তিন হাজার", "প্রায় চার হাজার", "প্রায় পাঁচ হাজার"], correct: 1 },
+            { q: "মাতৃভাষার বিবেচনায় সারা বিশ্বে বাংলা ভাষার স্থান কততম?", options: ["চতুর্থ", "পঞ্চম", "ষষ্ঠ", "সপ্তম"], correct: 2 },
+            { q: "গণপ্রজাতন্ত্রী বাংলাদেশের সংবিধানের কোন ভাগের কত অনুচ্ছেদে রাষ্ট্রভাষা বাংলার কথা লিপিবদ্ধ আছে?", options: ["প্রথম ভাগের দ্বিতীয় অনুচ্ছেদ", "প্রথম ভাগের তৃতীয় অনুচ্ছেদ", "দ্বিতীয় ভাগের প্রথম অনুচ্ছেদ", "তৃতীয় ভাগের প্রথম অনুচ্ছেদ"], correct: 1 },
+            { q: "আঞ্চলিক ভাষার অপর নাম ব্যাকরণে কী দেওয়া হয়েছে?", options: ["প্রমিত ভাষা", "লেখ্য রূপ", "উপভাষা", "সাধু ভাষা"], correct: 2 },
+            { q: "কোন অঞ্চলের উপভাষার উদাহরণ হিসেবে 'ঔগোয়া মাইনষ্যের দুয়া পোয়া আছিল্' বাক্যটি ব্যবহৃত হয়েছে?", options: ["সিলেট", "চট্টগ্রাম", "নোয়াখালী", "যশোর"], correct: 1 },
+            { q: "কোন ভাষারীতি অধিকতর গাম্ভীর্যপূর্ণ, তৎসম শব্দবহুল এবং ক্রিয়াপদের রূপ প্রাচীন রীতি অনুসারী?", options: ["চলিত রীতি", "প্রমিত কথ্য রীতি", "সাধু ভাষারীতি", "আঞ্চলিক রীতি"], correct: 2 },
+            { q: "ভাগীরথী নদীর তীরবর্তী স্থানসমূহের মৌখিক ভাষারীতি মানুষের মুখে মুখে রূপান্তর লাভ করে কোন রীতির জন্ম দেয়?", options: ["সাধু রীতি", "চলিত ভাষারীতি", "উপভাষা রীতি", "আঞ্চলিক কথ্য"], correct: 1 },
+            { q: "নিচের কোন শব্দজোড়টি বিশেষ্য পদের ক্ষেত্রে সাধু ও চলিত রূপের সঠিক পার্থক্য নির্দেশ করে?", options: ["তাহা - তা", "অদ্য - আজ", "হস্তী - হাতি", "আসিয়া - এসে"], correct: 2 },
+            { q: "সাধু রীতিতে ব্যবহৃত 'উহাদিগের' সর্বনাম পদটির চলিত রূপ নিচের কোনটি?", options: ["ওদের", "এদের", "তাদের", "কাকে"], correct: 0 },
+            
+            // Chapter 2.1, 2.2[cite: 1]
+            { q: "বাংলা ভাষায় মৌলিক স্বরধ্বনি কয়টি?", options: ["১১টি", "৭টি", "৩৯টি", "৫০টি"], correct: 1 },
+            { q: "বাংলা বর্ণমালায় মোট কয়টি বর্ণ রয়েছে এবং এর মধ্যে স্বরবর্ণ কয়টি?", options: ["৫০টি বর্ণ, ১১টি স্বরবর্ণ", "৩৯টি বর্ণ, ৭টি স্বরবর্ণ", "৫০টি বর্ণ, ১০টি স্বরবর্ণ", "৪৯টি বর্ণ, ১১টি স্বরবর্ণ"], correct: 0 },
+            { q: "স্বরবর্ণের সংক্ষিপ্ত রূপ 'কার'-চিহ্ন বাংলা বর্ণমালায় কয়টি আছে?", options: ["১১টি", "৭টি", "৯টি", "১০টি"], correct: 3 },
+            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, ৬টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
+            { q: "উচ্চারণস্থান অনুসারে 'ঋ, ট, ঠ, ড, ঢ, ণ, র, ল' বর্ণগুলোকে কী বলা হয়?", options: ["তালব্য বর্ণ", "ওষ্ঠ্য বর্ণ", "মূর্ধন্য বর্ণ", "দন্ত্য বর্ণ"], correct: 2 },
+            { q: "কোন শব্দটিতে 'অ' ধ্বনির উচ্চারণ সংবৃত বা পরিবর্তিত (ও-এর মতো) হয়েছে?", options: ["অজ", "অকাল", "নদী", "শপথ"], correct: 2 },
+            { q: "পদের প্রথমে ম-ফলা থাকলে উচ্চারণের ওপর কী প্রভাব পড়ে?", options: ["বর্ণটির দ্বিত্ব উচ্চারণ হয়", "বর্ণের উচ্চারণে কিছুটা ঝোঁক পড়ে এবং সামান্য নাসিক্যস্বর হয়", "ম-এর উচ্চারণ সম্পূর্ণ অক্ষুণ্ণ থাকে", "উচ্চারণ লোপ পেয়ে ও-কার হয়"], correct: 1 },
+            { q: "নিচের কোন শব্দে ব-ফলার উচ্চারণ সম্পূর্ণ বজায় থাকে (দ্বিত্ব হয় না)?", options: ["বিশ্বাস", "অশ্ব", "দিগ্বিজয়", "বিশ্ব"], correct: 2 },
+            { q: "গ, ঙ, ট, ণ, ন বা ম বর্ণের সঙ্গে ম-ফলা যুক্ত হলে কী ঘটে?", options: ["ম-এর উচ্চারণ বিলুপ্ত হয়", "ম-এর উচ্চারণ বজায় থাকে", "প্রথম বর্ণটির দ্বিত্ব হয়", "নাসিক্যস্বর পুরোপুরি বন্ধ হয়ে যায়"], correct: 1 },
+            { q: "'উদ্বাস্তু' ও 'উদ্বেল' শব্দে ব-ফলার উচ্চারণ বজায় থাকার ব্যাকরণগত কারণ কী?", options: ["এগুলো শব্দের প্রথমে অবস্থিত", "উৎ উপসর্গের সঙ্গে ব-ফলা যুক্ত হয়েছে", "এগুলো তৎসম সন্ধিজাত শব্দ", "এগুলো ম-ফলার নিয়ম মেনে চলে"], correct: 1 },
+
+            // Chapter 3.1, 3.2[cite: 1]
+            { q: "পাশাপাশি অবস্থিত দুটো ধ্বনির মিলনের ফলে যদি এক ধ্বনি সৃষ্টি হয়, তাকে কী বলে?", options: ["কার", "ফলা", "সন্ধি", "সমাস"], correct: 2 },
+            { q: "ড. মুহম্মদ শহীদুল্লাহ্র মতে সন্ধির মূল উদ্দেশ্য বা সুবিধা কী?", options: ["বানান জটিলতা দূর করা", "উচ্চারণের সুবিধা ও মিলন ঘটানো", "নতুন বিদেশি শব্দ তৈরি", "বাক্যের দৈর্ঘ্য বৃদ্ধি করা"], correct: 1 ] },
+            { q: "সন্ধিতে ধ্বনির প্রধানত কয় ধরনের মিলন হয়ে থাকে?", options: ["দুই ধরনের", "তিন ধরনের", "চার ধরনের", "পাঁচ ধরনের"], correct: 2 },
+            { q: "সন্ধি প্রধানত কয় ধরনের হয়ে থাকে?", options: ["দুই ধরনের (স্বর ও ব্যঞ্জন)", "তিন ধরনের (স্বর, ব্যঞ্জন ও বিসর্গ)", "চার ধরনের", "পাঁচ ধরনের"], correct: 0 },
+
+            // Chapter 4.1 to 4.8[cite: 1]
+            { q: "নিচের কোনটি বাংলা ব্যাকরণের 'নির্দেশক সর্বনামের রূপ' এর উদাহরণ?", options: ["আমি, আমরা", "এই, ইহা, উহা", "কে, কাকে", "নিজে, নিজে"], correct: 1 },
+            { q: "ক্রিয়াপদের মূল অংশকে কী বলা হয় যা বিশ্লেষণ করা যায় না?", options: ["উপসর্গ", "ধাতু", "নির্দেশক", "অনুকার"], correct: 1 },
+            { q: "যে ক্রিয়াপদের কর্মপদ থাকে, তাকে ব্যাকরণে কোন ধরনের ক্রিয়া বলা হয়?", options: ["অকর্মক ক্রিয়া", "সকর্মক ক্রিয়া", "দ্বিকর্মক ক্রিয়া", "যৌগিক ক্রিয়া"], correct: 1 },
+            { q: "ধাতু প্রধানত দুই প্রকার - মৌলিক ধাতু ও অপরটি কী?", options: ["যৌগিক ধাতু", "সাধিত ধাতু", "সংযোগমূলক ধাতু", "নাম ধাতু"], correct: 1 },
+            { q: "ক্রিয়া সম্পাদনের সময়কে কী বলা হয়?", options: ["ক্রিয়ার ভাব", "ক্রিয়ার কাল", "ক্রিয়ার রূপ", "ধাতুর গঠন"], correct: 1 },
+            { q: "সাধু ভাষারীতিতে সর্বনাম ও ক্রিয়াপদের রূপ কেমন থাকে?", options: ["সংক্ষিপ্ত রূপ ব্যবহৃত হয়", "পূর্ণরূপ ব্যবহৃত হয়", "আঞ্চলিক রূপ ধারণ করে", "কোনো নির্দিষ্ট নিয়ম থাকে না"], correct: 1 }
         ];
 
-        let currentIdx = 0;
+        const funFacts = [
+            "মজার তথ্য: বাংলা ভাষার বয়স প্রায় ১০০০ বছরেরও বেশি এবং এটি প্রবহমান নদীর মতো পরিবর্তনশীল! 🌊",
+            "মজার তথ্য: বাংলা বর্ণমালায় পূর্ণমাত্রার বর্ণ ৩২টি, অর্ধমাত্রার বর্ণ ৮টি এবং মাত্রাহীন বর্ণ ১০টি! 🔢",
+            "মজার তথ্য: ড. সুনীতিকুমার চট্টোপাধ্যায়ের বিখ্যাত বই 'ODBL' বাংলা ভাষার উৎপত্তির ইতিহাস নিখুঁতভাবে প্রমাণ করেছে! 📚",
+            "মজার তথ্য: সাধু ভাষারীতি কেবল মাত্র লেখার গদ্যে ব্যবহৃত হতো, থিয়েটার বা নাটকের সংলাপে এটি সম্পূর্ণ অনুপযোগী ছিল! 🎭",
+            "মজার তথ্য: বাংলা পৃথিবীর একমাত্র ভাষা যার জন্য মানুষ নিজের বুকের তাজা রক্ত ঢেলে দিয়ে আন্দোলন করেছে! 🇧🇩",
+            "মজার তথ্য: ম-ফলা ও ব-ফলার উচ্চারণ শব্দের প্রথমে থাকলে শুধু ঝোঁক বাড়ায়, কিন্তু মাঝখানে থাকলে পুরো বর্ণ দ্বিত্ব করে ফেলে! ⚡"
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let selectedOptionIndex = null;
+        let wrongAnswersTracker = [];
+        let isMistakeFixMode = false;
+
+        function initQuiz() {
+            currentQuestions = [...masterQuestionBank];
+            currentIndex = 0;
+            score = 0;
+            wrongAnswersTracker = [];
+            isMistakeFixMode = false;
+            
+            document.getElementById("quiz-card").style.display = "block";
+            document.getElementById("result-card").style.display = "none";
+            document.getElementById("review-btn").style.display = "inline-block";
+            
+            loadQuestion();
+        }
 
         function loadQuestion() {
-            const current = quizData[currentIdx];
-            document.getElementById("question-text").innerText = current.q;
-            const container = document.getElementById("answers-container");
-            container.innerHTML = "";
-            document.getElementById("feedback-text").innerText = "";
+            selectedOptionIndex = null;
+            document.getElementById("feedback-box").style.display = "none";
+            document.getElementById("fact-box").style.display = "none";
+            
+            const actionBtn = document.getElementById("action-btn");
+            actionBtn.innerText = "উত্তর জমা দিন";
+            actionBtn.onclick = checkAnswer;
 
-            if (current.type === "mcq") {
-                current.options.forEach(opt => {
-                    container.innerHTML += `<label class="option"><input type="radio" name="quiz-opt" value="${opt}"> ${opt}</label>`;
-                });
-                document.getElementById("submit-btn").style.display = "block";
-            } else if (current.type === "sa") {
-                container.innerHTML = `<input type="text" id="sa-input" placeholder="Type your answer here...">`;
-                document.getElementById("submit-btn").style.display = "block";
+            const currentQ = currentQuestions[currentIndex];
+            
+            // Render text trackers
+            if (!isMistakeFixMode) {
+                document.getElementById("question-count").innerText = `প্রশ্ন: ${currentIndex + 1} / ${currentQuestions.length}`;
+            } else {
+                document.getElementById("question-count").innerText = `ভুল সংশোধন মোড: ${currentIndex + 1} / ${currentQuestions.length}`;
             }
+            document.getElementById("score-count").innerText = `স্কোর: ${score}`;
+            
+            // Set Progress Bar
+            const percent = ((currentIndex) / currentQuestions.length) * 100;
+            document.getElementById("progress-fill").style.width = `${percent}%`;
+
+            document.getElementById("question-text").innerText = currentQ.q;
+
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            currentQ.options.forEach((optionText, idx) => {
+                const label = document.createElement("label");
+                label.className = "option";
+                label.innerHTML = `<input type="radio" name="quiz-option" value="${idx}"> ${optionText}`;
+                label.onclick = function() {
+                    const allOptions = document.querySelectorAll('.option');
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    label.classList.add('selected');
+                    selectedOptionIndex = idx;
+                };
+                optionsContainer.appendChild(label);
+            });
         }
 
         function checkAnswer() {
-            const current = quizData[currentIdx];
-            let userAnswer = "";
+            if (selectedOptionIndex === null) {
+                alert("vro আগে একটা অপশন সিলেক্ট কর! 😭🥀");
+                return;
+            }
+
+            const currentQ = currentQuestions[currentIndex];
+            const feedbackBox = document.getElementById("feedback-box");
             
-            if (current.type === "mcq") {
-                const selected = document.querySelector('input[name="quiz-opt"]:checked');
-                if (!selected) return alert("Pick an option, vro!");
-                userAnswer = selected.value;
+            if (selectedOptionIndex === currentQ.correct) {
+                score++;
+                feedbackBox.className = "feedback correct";
+                feedbackBox.innerText = "✅ ঠিক হয়েছে ব্রো! ওপি লেভেলের ব্রেইন! 🔥";
             } else {
-                userAnswer = document.getElementById("sa-input").value.trim();
+                if (!isMistakeFixMode) {
+                    wrongAnswersTracker.push(currentQ); // Track only on original pass
+                }
+                feedbackBox.className = "feedback wrong";
+                feedbackBox.innerText = `❌ ভুল করেছিস! সঠিক উত্তর: ${currentQ.options[currentQ.correct]}`;
+            }
+            feedbackBox.style.display = "block";
+            document.getElementById("score-count").innerText = `স্কোর: ${score}`;
+
+            // Trigger Random Fun Fact every 3rd or 5th question milestone
+            if ((currentIndex + 1) % 3 === 0 || (currentIndex + 1) % 5 === 0) {
+                const factBox = document.getElementById("fact-box");
+                const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+                factBox.innerText = randomFact;
+                factBox.style.display = "block";
             }
 
-            const feedback = document.getElementById("feedback-text");
-            if (userAnswer.toLowerCase() === current.correct.toLowerCase()) {
-                feedback.innerText = "✅ Correct! Smart choice.";
-                feedback.style.color = "#4caf50";
-            } else {
-                feedback.innerText = `❌ Wrong. Correct answer: ${current.correct}`;
-                feedback.style.color = "#f44336";
-            }
-
-            setTimeout(() => {
-                currentIdx = (currentIdx + 1) % quizData.length;
-                loadQuestion();
-            }, 2000);
+            const actionBtn = document.getElementById("action-btn");
+            actionBtn.innerText = "পরবর্তী প্রশ্ন";
+            actionBtn.onclick = nextQuestion;
         }
 
-        loadQuestion();
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById("quiz-card").style.display = "none";
+            document.getElementById("result-card").style.display = "block";
+            
+            const finalScoreBox = document.getElementById("final-score");
+            finalScoreBox.innerText = `${score} / ${currentQuestions.length}`;
+
+            const verdictMsg = document.getElementById("verdict-msg");
+            
+            if (isMistakeFixMode) {
+                if (score === currentQuestions.length) {
+                    verdictMsg.className = "status-msg status-good";
+                    verdictMsg.innerText = "সাবাশ Shafir! সব ভুল সংশোধন করে ফেলেছিস! এবার তুই বস! 😎🔥";
+                    document.getElementById("review-btn").style.display = "none";
+                } else {
+                    verdictMsg.className = "status-msg status-bad";
+                    verdictMsg.innerText = "এখনও কিছু ভুল রয়ে গেছে vro! আবার ট্রাই কর! ✌️😭";
+                }
+                return;
+            }
+
+            // Normal mode evaluation
+            const performanceRatio = score / currentQuestions.length;
+            if (performanceRatio < 0.5) {
+                verdictMsg.className = "status-msg status-bad";
+                verdictMsg.innerText = "You suck at these stuff!! VERYYYY bad ব্রো, পড়ালেখা একটু কর! ✌️😭🥀";
+            } else if (performanceRatio < 0.8) {
+                verdictMsg.className = "status-msg status-good";
+                verdictMsg.innerText = "মোটামুটি ভালো করেছিস, কিন্তু আরও ইমপ্রুভ করা লাগবে! ⚡";
+            } else {
+                verdictMsg.className = "status-msg status-good";
+                verdictMsg.innerText = "লেভেল এক্সপার্ট! তুই তো বাংলা ২য় পত্রে আগুন জ্বালিয়ে দিবি Shafir! 👑🔥";
+            }
+
+            const reviewBtn = document.getElementById("review-btn");
+            if (wrongAnswersTracker.length === 0) {
+                reviewBtn.style.display = "none";
+            } else {
+                reviewBtn.innerText = `ভুলগুলো সংশোধন করো (${wrongAnswersTracker.length}টি ভুল আছে) 🛠️`;
+            }
+        }
+
+        function startMistakeFix() {
+            if (wrongAnswersTracker.length === 0) return;
+            currentQuestions = [...wrongAnswersTracker];
+            currentIndex = 0;
+            score = 0;
+            isMistakeFixMode = true;
+
+            document.getElementById("quiz-card").style.display = "block";
+            document.getElementById("result-card").style.display = "none";
+            
+            loadQuestion();
+        }
+
+        function resetQuiz() {
+            initQuiz();
+        }
+
+        // Helper catchall for unified dynamic button
+        function processActionButton() {
+            // Managed by toggle overrides dynamically
+        }
+
+        // Run on load
+        initQuiz();
     </script>
 </body>
 </html>
