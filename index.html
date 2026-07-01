@@ -3,607 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shafir's Study Hall</title>
+    <title>সারাংশ মূল্যায়ন অ্যাপ</title>
     <style>
-        :root {
-            --bg: #03000a;
-            --card-bg: #0c0714;
-            --border: #2e1a47;
-            --text: #f4f4f5;
-            --text-muted: #a78bfa;
-            --glow: #a78bfa;
-            --accent: #6366f1;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
-        .card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 0 25px rgba(167, 139, 250, 0.15); border: 1px solid var(--border); margin-bottom: 20px; transition: border 0.3s ease, box-shadow 0.3s ease; }
-        .card:hover { border-color: var(--glow); box-shadow: 0 0 35px rgba(167, 139, 250, 0.25); }
-        h1 { text-align: center; color: var(--text); font-size: 2.2rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.05em; text-shadow: 0 0 15px rgba(167, 139, 250, 0.6); }
-        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; text-shadow: 0 0 8px rgba(167, 139, 250, 0.3); }
-        
-        /* Navigation Tabs Styles */
-        .nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 30px; }
-        .tab-btn { background: #130b21; color: #d4d4d8; border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: all 0.2s ease; }
-        .tab-btn:hover, .tab-btn.active { background: var(--card-bg); color: #fff; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.4); }
-        .engine-space { display: none; }
-        .engine-space.active { display: block; }
-
-        /* MCQ Engine Styles */
-        .progress-bar { height: 4px; width: 100%; background: #180e2b; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--glow), var(--accent)); width: 0%; box-shadow: 0 0 10px var(--glow); transition: width 0.3s ease; }
-        .stats { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: #f4f4f5; }
-        .option { display: block; background: #130b21; padding: 14px 20px; border-radius: 8px; margin: 10px 0; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; font-size: 0.95rem; }
-        .option:hover { border-color: var(--glow); background: #1a0f2e; box-shadow: 0 0 12px rgba(167, 139, 250, 0.2); }
-        .option input { display: none; }
-        .option.selected { background: #22123b; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.4); color: #fff; }
-        
-        .btn { display: inline-block; background: linear-gradient(135deg, var(--glow), var(--accent)); color: #03000a; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; width: 100%; margin-top: 15px; text-align: center; box-shadow: 0 0 15px rgba(167, 139, 250, 0.3); }
-        .btn:hover { transform: translateY(-1px); box-shadow: 0 0 25px rgba(167, 139, 250, 0.6); opacity: 0.95; }
-        
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: 600; font-size: 1rem; display: none; text-align: center; }
-        .feedback.correct { background: rgba(52, 211, 153, 0.08); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); box-shadow: 0 0 15px rgba(52, 211, 153, 0.2); }
-        .feedback.wrong { background: rgba(248, 113, 113, 0.08); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); box-shadow: 0 0 15px rgba(248, 113, 113, 0.2); }
-        .fun-fact { background: #0c0714; border: 1px solid var(--border); padding: 15px; border-radius: 8px; color: #cbd5e1; font-size: 0.9rem; margin-top: 15px; display: none; }
-        .result-screen { text-align: center; display: none; }
-        .score-big { font-size: 3.5rem; font-weight: 700; color: #fff; margin: 20px 0; text-shadow: 0 0 20px var(--glow); }
-        .status-msg { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
-        .status-bad { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
-        .status-good { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
-
-        /* Written Engine Styles */
-        textarea { width: 100%; height: 140px; background: #130b21; color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 1rem; resize: vertical; margin-top: 10px; font-family: inherit; box-sizing: border-box; transition: all 0.2s; }
-        textarea:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 15px rgba(167, 139, 250, 0.3); }
-        .comp-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
-        .comp-choice { background: #130b21; padding: 15px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: left; transition: 0.2s; font-size: 0.95rem; }
-        .comp-choice:hover { border-color: var(--glow); box-shadow: 0 0 12px rgba(167, 139, 250, 0.2); }
-        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        @media(max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
-        .pane { background: #130b21; padding: 15px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; }
-        .pane-title { font-weight: 600; color: var(--text-muted); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .checklist { margin-top: 12px; background: #130b21; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
-        .check-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.9rem; color: #d4d4d8; }
-        select { width: 100%; padding: 12px; background: #130b21; color: #fff; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; transition: 0.2s; }
-        select:focus { outline: none; border-color: var(--glow); }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            background-color: #2ecc71;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        .box {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+            white-space: pre-line;
+            border-radius: 0 4px 4px 0;
+        }
+        .result-box {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+            border-radius: 0 4px 4px 0;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Shafir's Study Hall</h1>
-    <div class="subtitle">৮ম শ্রেণি — বাংলা ২য় পত্র (একাডেমিক ড্যাশবোর্ড)</div>
+<div class="container">
+    <h1>সারাংশ মূল্যায়ন (Class 8 NCTB)</h1>
+    
+    <label for="storySelect"><strong>অনুচ্ছেদটি নির্বাচন করো:</strong></label>
+    <select id="storySelect" onchange="loadStory()">
+        <option value="story_2_1">২.১ কিসের থেকে এসেছে আমাদের বাংলা ভাষা?</option>
+        <option value="story_2_2">২.২ আনন্দ প্রকাশ জীবনীশক্তির প্রবলতারই প্রকাশ</option>
+        <option value="story_2_3">২.৩ বাঙালি যেদিন ঐক্যবদ্ধ হয়ে বলতে পারবে</option>
+        <option value="story_2_4">২.৪ একজন মানুষ ভালো কি মন্দ আমরা তা বুঝতে পারি</option>
+        <option value="story_2_5">২.৫ সূর্যের আলোতে রাতের অন্ধকার কেটে যায়</option>
+    </select>
 
-    <!-- GLOBAL TABS SYSTEM -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchSection('mcq-section')">ব্যাকরণ কুইজ (১৫টি এমসিকিউ)</button>
-        <button class="tab-btn" onclick="switchSection('comprehension-section')">অনুধাবন (পৃষ্ঠা ৯২)</button>
-        <button class="tab-btn" onclick="switchSection('summary-section')">সারাংশ/সারমর্ম (পৃষ্ঠা ৯৩)</button>
-        <button class="tab-btn" onclick="switchSection('expansion-section')">ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭)</button>
-        <button class="tab-btn" onclick="switchSection('letters-section')">পত্র রচনা (পৃষ্ঠা ১০২-১০৬)</button>
-        <button class="tab-btn" onclick="switchSection('composition-section')">প্রবন্ধ রচনা (পৃষ্ঠা ১১২+)</button>
+    <h2>মূল পাঠ:</h2>
+    <div id="originalText" class="box"></div>
+
+    <label for="userInput"><strong>তোমার লেখা সারাংশ এখানে দাও:</strong></label>
+    <textarea id="userInput" placeholder="এখানে তোমার সারাংশটি লেখো বা পেস্ট করো..."></textarea>
+
+    <button onclick="evaluateSummary()">মূল্যায়ন করো</button>
+
+    <div id="result" class="result-box">
+        <h2>মূল্যায়ন ফলাফল</h2>
+        <p><strong>প্রাপ্ত স্কোর:</strong> <span id="scoreValue" class="score">০</span> / ১০০</p>
+        <div id="feedback" style="white-space: pre-line;"></div>
     </div>
+</div>
 
-    <!-- MODULE 1: 15 MCQ QUIZ -->
-    <div id="mcq-section" class="engine-space active">
-        <div id="quiz-card" class="card">
-            <div class="stats">
-                <span id="question-count">প্রশ্ন: ১/১৫</span>
-                <span id="score-count">স্কোর: ০</span>
-            </div>
-            <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-            
-            <div id="question-area">
-                <div id="question-text" class="question">লোডিং...</div>
-                <div id="options-container"></div>
-            </div>
+<script>
+    // Exact official texts from image_1a0f5c.png and image_1a0f7d.png
+    const summaryData = {
+        story_2_1: {
+            text: "কোথা থেকে এসেছে আমাদের বাংলা ভাষা? ভাষা কি জন্ম নেয় মানুষের মতো? বা যেমন বীজ থেকে গাছ জন্মে তেমনভাবে জন্ম নেয় ভাষা? না, ভাষা মানুষ বা তরুর মতো জন্ম নেয় না। বাংলা ভাষাও মানুষ বা তরুর মতো জন্ম নেয়নি, কোনো কল্পিত স্বর্গ থেকেও আসেনি। এখন আমরা যে বাংলা ভাষা বলি এক হাজার বছর আগে তা ঠিক এমন ছিল না। সে-ভাষায় এ-দেশের মানুষ কথা বলত, গান গাইত, কবিতা বানাত। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। রূপ বদলে যায় শব্দের, বদল ঘটে অর্থের। অনেক দিন কেটে গেলে মনে হয় ভাষাটি একটি নতুন ভাষা হয়ে উঠেছে। আর সে-ভাষার বদল ঘটেই জন্ম হয়েছে বাংলা ভাষার।",
+            summary: "ভাষার ধর্মই হচ্ছে বদলে যাওয়া। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। শব্দেরও বদল ঘটে এবং সে সঙ্গে শব্দের অর্থেরও। হাজার বছরের পরিবর্তনের ধারাবাহিকতায় এমনিভাবেই আমাদের বাংলা ভাষার জন্ম হয়েছে।"
+        },
+        story_2_2: {
+            text: "আনন্দ প্রকাশ জীবনীশক্তির প্রবলতারই প্রকাশ। আমরা আনন্দকে ইন্দ্রিয়ের মাধ্যমে রূপ-রস-শব্দ-স্পর্শ গন্ধ ইত্যাদির সাহায্যে উপলব্ধি করি। মানুষ যখন আনন্দ পায় তখন সে তার মনকে প্রকাশ করতে চায় – নানা রূপে। তাই সৃষ্টি হলো চিত্রশিল্পী, নৃত্যশিল্পী, সংগীতশিল্পী, কবি, সাহিত্যিক। পুরাকালের গুহামানুষ থেকে শুরু করে বর্তমান যুগ পর্যন্ত মানুষ নিজের পাওয়া আনন্দকে সুন্দরের অন্য মানুষের মধ্যে বিস্তার করতে চেয়েছে। তাই সৃষ্টি হয়েছে নানান আঙ্গিকের শিল্পকলা।",
+            summary: "মানুষের জীবনীশক্তির প্রকাশ ঘটে আনন্দে। তার সমস্ত ইন্দ্রিয় দিয়ে আনন্দকে সে উপলব্ধি করে। সেই আনন্দানুভূতি সবার কাছে জানাতে চায়। তাই ছবি, গান, কবিতা, নাচ, ভাস্কর্য ইত্যাদি শিল্পকলার মাধ্যমে মানুষ তার আনন্দকে প্রকাশ করে। এই আনন্দ ও সুন্দর বোধ মানুষের মনকে তৃপ্ত করে।"
+        },
+        story_2_3: {
+            text: "বাঙালি যেদিন ঐক্যবদ্ধ হয়ে বলতে পারবে – ‘বাঙালির বাংলা’ সেদিন তারা অসাধ্য সাধন করবে। বাঙালির মতো জ্ঞান-শক্তি ও প্রেম-শক্তি (ব্রেন সেন্টার ও হার্ট সেন্টার) এশিয়ায় কেন, বুঝি পৃথিবীতে কোনোজাতির নেই। কিন্তু কর্ম-শক্তি একেবারে নেই বলেই তাদের এই দিব্যশক্তি তমসাবৃত হয়ে আছে। তাদের কর্ম-বিমুখতা, জড়তা, মৃত্যুভয়, আলস্য, তন্দ্রা, নিদ্রা, ব্যবসা-বাণিজ্যে অনিচ্ছার কারণ। তারা তামসিকতায় আচ্ছন্ন হয়ে চেতনা-শক্তিকে হারিয়ে ফেলেছে। এই তমস, এই তিমির, এই জড়তাই অবিদ্যা। অবিদ্যা কেবল অন্ধকার পথে ভ্রান্তির পথে নিয়ে যায়; দিব্যশক্তিকে নিস্তেজ, মৃতপ্রায় করে রাখে।",
+            summary: "বাঙালি প্রেম-শক্তি ও জ্ঞান-শক্তিতে অতুলনীয়। কিন্তু আলস্য তাদের দুর্বল করে রেখেছে। কর্মবিমুখতা আর কাজের প্রতি অনিহার জন্য তারা জগতের সবকিছুর থেকে পিছিয়ে আছে। এই আলস্য ও কর্ম বিমুখতাকে উপেক্ষা করে বাঙালিকে জেগে উঠতে হবে। তবেই এই জাতি প্রকৃত অর্থে বাঙালি হবে।"
+        },
+        story_2_4: {
+            text: "একজন মানুষ ভালো কি মন্দ আমরা তা বুঝতে পারি তার ব্যবহার দিয়ে। সে ভদ্র কি অভদ্র তাও বুঝতে পারি তার ব্যবহার দিয়ে। ব্যবহার ভালো হলে লোকে তাকে ভালো বলে। তাকে পছন্দ করে। ব্যবহার খারাপ হলে লোকে তাকে খারাপ বলে। তাকে অপছন্দ করে। তার সঙ্গে মিশতে চায় না। তার সঙ্গে কাজ করতে চায় না। তাকে কাছে রাখতে চায় না। তোমার ব্যবহার দিয়েই তোমার মনুষ্যত্বের পরিচয়।",
+            summary: "সুন্দর ব্যবহারের মধ্যেই মনুষ্যত্বের পরিচয় নিহিত। মানুষের আচার আচরণ, সততা ও আদর-কদর এর মধ্য দিয়েই সুন্দর ব্যবহারের প্রকাশ ঘটে। ভালো ব্যবহার দিয়ে সহজেই অপরের ভালোবাসা পাওয়া যায়। সুন্দর স্বভাবের মধ্যেই মানুষের সৌন্দর্য ফুটে ওঠে।"
+        },
+        story_2_5: {
+            text: "সূর্যের আলোতে রাতের অন্ধকার কেটে যায়। শিক্ষার আলো আমাদের অজ্ঞতার অন্ধকার দূর করে। আমাদের দৃষ্টিতে চারপাশের জগৎ আরও সুন্দর হয়ে ওঠে। আমরা জীবনের নতুন অর্থ খুঁজে পাই; শিক্ষার আলো পেয়ে আমাদের ভেতরের মানুষটি জেগে ওঠে। আমরা বড় হতে চাই, বড় হওয়ার জন্য চেষ্টা করি। আমরা সুন্দর করে বাঁচতে চাই, বাঁচার মতো বাঁচতে চাই। আর সুন্দর করে বাঁচতে হলে চাই জ্ঞান। এই জ্ঞানকে কাজে লাগানো চাই। শিক্ষার ফলে আমাদের ভেতর যে শক্তি লুকানো থাকে তা ধীরে ধীরে জেগে ওঠে। আমরা মানুষ হয়ে উঠি।",
+            summary: "সূর্যের আলো যেমন অন্ধকার দূর করে, তেমনি শিক্ষার আলো মনের অন্ধকার দূর করে দেয়। আমাদের প্রত্যেকের ভেতরে শক্তি লুকানো থাকে। শিক্ষা এ শক্তির বিকাশে সাহায্য করে। শিক্ষার ফলে আমরা জ্ঞান ও দক্ষতা লাভ করে নিজের শক্তিকে কাজে লাগাই। যথার্থ মানুষ হয়ে উঠি।"
+        }
+    };
 
-            <button class="btn" id="action-btn">উত্তর জমা দিন</button>
-            <div id="feedback-box" class="feedback"></div>
-            <div id="fact-box" class="fun-fact"></div>
-        </div>
+    function loadStory() {
+        const selected = document.getElementById("storySelect").value;
+        document.getElementById("originalText").innerText = summaryData[selected].text;
+    }
 
-        <div id="result-card" class="card result-screen">
-            <h2>मूल्यांकन সম্পন্ন</h2>
-            <div class="score-big" id="final-score">০ / ১৫</div>
-            <div id="verdict-msg" class="status-msg"></div>
-            <button class="btn" id="review-btn" onclick="startMistakeFix()">ভুলসমূহ সংশোধন করুন</button>
-            <button class="btn" style="background:#130b21; color:#fff; border: 1px solid var(--border); margin-top:10px;" onclick="resetQuiz()">পুনরায় পরীক্ষা দিন</button>
-        </div>
-    </div>
+    function evaluateSummary() {
+        const selected = document.getElementById("storySelect").value;
+        const userText = document.getElementById("userInput").value.trim();
+        const officialSummary = summaryData[selected].summary;
 
-    <!-- MODULE 2: COMPREHENSION (PAGE 92) -->
-    <div id="comprehension-section" class="card engine-space">
-        <h3>অনুধাবন শক্তি ও প্রশ্নোত্তর (পৃষ্ঠা ৯২)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে ৪টি প্রশ্নের উত্তর ক্রমানুসারে প্রদান করো।</p>
-        <div class="pane" style="margin-bottom: 15px;">
-            <strong>অনুচ্ছেদ:</strong> "প্রাতিষ্ঠানিক শিক্ষার উপযোগ বহুমাত্রিক। শুধু জ্ঞান পরিবেশন নয়, দক্ষ মানবসম্পদ গড়ে তোলার মাধ্যমে সমৃদ্ধ জাতিগঠন এই শিক্ষার মূল উদ্দেশ্য। একই সাথে মানবিক ও বিজ্ঞানমনস্ক সমাজগঠন নিশ্চিত করার প্রধান অবলম্বনও প্রাতিষ্ঠানিক শিক্ষা।"
-        </div>
+        if (!userText) {
+            alert("দয়া করে আগে কিছু লেখো!");
+            return;
+        }
+
+        // Clean text arrays for evaluating keywords
+        const userWords = userText.split(/\s+/);
+        const officialWords = officialSummary.split(/\s+/);
         
-        <div id="comp-engine">
-            <div class="stats"><span id="comp-q-num">প্রশ্ন: ১/৪</span><span id="comp-score-num">স্কোর: ০/৫</span></div>
-            <div class="pane" id="comp-question-display" style="font-weight:600; margin-bottom:10px;"></div>
-            <textarea id="comp-answer" placeholder="আপনার উত্তর এখানে লিখুন..."></textarea>
-            <button class="btn" id="comp-next-btn" onclick="submitCompAnswer()">উত্তর জমা দিন</button>
-            <div id="comp-feedback" style="display:none; margin-top:15px;" class="pane"></div>
-        </div>
-        
-        <div id="comp-result" style="display:none; text-align:center;">
-            <h4>অনুধাবন মূল্যায়ন সম্পন্ন!</h4>
-            <div class="score-big" id="comp-final-score">০ / ৫</div>
-            <button class="btn" onclick="resetCompEngine()">পুনরায় চেষ্টা করুন</button>
-        </div>
-    </div>
-
-    <!-- MODULE 3: SUMMARY (PAGE 93) -->
-    <div id="summary-section" class="card engine-space">
-        <h3>সারাংশ ও সারমর্ম (পৃষ্ঠা ৯৩)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">অনুশীলনের জন্য একটি বিভাগ নির্বাচন করুন।</p>
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('story')">সারাংশ (গদ্য)</button>
-            <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('poem')">সারমর্ম (পদ্য)</button>
-        </div>
-        <div id="summary-prompt-area" style="display:none;">
-            <div class="pane" id="summary-text-pane" style="margin-bottom:15px; font-style:italic; font-size:1.05rem; background:#130b21; border-color:var(--border);"></div>
-            <strong>আপনার উত্তর লিখুন:</strong>
-            <textarea id="summary-user-input" style="height:150px;" placeholder="মূল ভাবটি সংক্ষেপে ফুটিয়ে তুলুন..."></textarea>
-            <button class="btn" onclick="evaluateSummary()">মূল্যায়ন করুন</button>
-            <div id="summary-feedback" style="display:none; margin-top:15px;" class="pane"></div>
-        </div>
-    </div>
-
-    <!-- MODULE 4: EXPANSION (PAGE 97) -->
-    <div id="expansion-section" class="card engine-space">
-        <h3>ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭: ৩.১ - ৩.৫)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">ড্রপডাউন থেকে নির্বাচন করুন অথবা র্যান্ডমাইজ বাটন চাপুন।</p>
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <select id="expansion-select" style="width:70%;" onchange="loadExpansionPrompt()">
-                <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করুন --</option>
-                <option value="3.1">৩.১: "পরিশ্রম সৌভাগ্যের প্রসূতি"</option>
-                <option value="3.2">৩.২: "দুর্জন বিদ্বান হইলেও পরিত্যাজ্য"</option>
-                <option value="3.3">৩.৩: "স্বদেশপ্রেমই প্রকৃত মানুষের ধর্ম"</option>
-                <option value="3.4">৩.৪: "অন্যায় যে করে আর অন্যায় যে সহে"</option>
-                <option value="3.5">৩.৫: "জ্ঞানের চেয়ে মহৎ গুণ আর নাই"</option>
-            </select>
-            <button class="btn" style="width:30%; margin-top:0;" onclick="randomizeExpansion()">🎲 র্যান্ডমাইজ</button>
-        </div>
-        <div id="expansion-work-area" style="display:none; margin-top:15px;">
-            <div class="pane" id="expansion-prompt-display" style="font-weight:600; margin-bottom:10px;"></div>
-            <textarea id="expansion-user-input" placeholder="আপনার ভাব-সম্প্রসারণ (মূলভাব, সম্প্রসারিত ভাব, মন্তব্য) এখানে বিস্তারিত লিখুন..."></textarea>
-            <button class="btn" onclick="evaluateExpansion()">আদর্শ উত্তরের সাথে তুলনা করুন</button>
-            <div class="comparison-box" id="expansion-comparison" style="display:none;">
-                <div class="pane">
-                    <div class="pane-title">আপনার উত্তর</div>
-                    <p id="expansion-user-pane" style="white-space: pre-wrap;"></p>
-                </div>
-                <div class="pane">
-                    <div class="pane-title">পাঠ্যবই/গাইডভিত্তিক আদর্শ কাঠামো</div>
-                    <p id="expansion-guide-pane" style="color:var(--text-muted);"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODULE 5: LETTERS (PAGE 102-106) -->
-    <div id="letters-section" class="card engine-space">
-        <h3>পত্র রচনা (পৃষ্ঠা ১০২-১০৬)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">পত্রের প্রকারভেদ অনুযায়ী কাঠামো ঠিক রেখে অনুশীলন করুন।</p>
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="tab-btn" style="width:50%;" onclick="loadLetter('102')">ব্যক্তিগত পত্র (পৃষ্ঠা ১০২)</button>
-            <button class="tab-btn" style="width:50%;" onclick="loadLetter('106')">আবেদন পত্র (পৃষ্ঠা ১০৬)</button>
-        </div>
-        <div id="letter-work-area" style="display:none;">
-            <div class="pane" id="letter-prompt-text" style="margin-bottom:15px; font-weight:600;"></div>
-            <textarea id="letter-user-input" style="height:200px;" placeholder="তারিখ, সম্বোধন, মূল গর্ভ ও সমাপ্তি অংশসহ সম্পূর্ণ রূপটি লিখুন..."></textarea>
-            <button class="btn" onclick="checkLetterStructure()">চিঠির কাঠামো যাচাই করুন</button>
-            <div id="letter-feedback" style="display:none; margin-top:15px;" class="pane"></div>
-        </div>
-    </div>
-
-    <!-- MODULE 6: COMPOSITION (PAGE 112+) -->
-    <div id="composition-section" class="card engine-space">
-        <h3>প্রবন্ধ রচনা (পৃষ্ঠা ১১২+: র্যান্ডম ৩ সিলেকশন)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">প্রথম ৭টি রচনার মধ্য থেকে স্বয়ংক্রিয়ভাবে ৩টি বিকল্প দেওয়া হলো। যেকোনো একটি বেছে নিন।</p>
-        <button class="btn" style="background:#130b21; color:#fff; border: 1px solid var(--border); margin-bottom:15px;" onclick="generateRandomCompositions()">৩টি প্রবন্ধ র্যান্ডমাইজ করুন</button>
-        
-        <div class="comp-options" id="comp-options-space"></div>
-
-        <div id="comp-writing-area" style="display:none; margin-top:20px;">
-            <h4 id="selected-comp-title" style="color:#fff; margin-bottom:10px;"></h4>
-            <textarea id="comp-user-input" style="height:250px;" oninput="updateCompChecklist()" placeholder="ভূমিকা, মূল প্যারাগ্রাফ এবং উপসংহার স্পষ্টভাবে আলাদা করে লিখুন..."></textarea>
-            
-            <div class="checklist">
-                <div class="pane-title" style="color:var(--text-muted); font-size:0.8rem;">প্রবন্ধের কাঠামো ট্র্যাকার</div>
-                <div class="check-item"><input type="checkbox" id="chk-intro" disabled> <span><strong>ভূমিকা অংশ:</strong> প্রারম্ভিক সূচনা অনুচ্ছেদ চিহ্নিত।</span></div>
-                <div class="check-item"><input type="checkbox" id="chk-body" disabled> <span><strong>মূল বিষয়বস্তু:</strong> পয়েন্ট বা বিস্তারিত আলোচনা চিহ্নিত (ন্যূনতম দৈর্ঘ্য)।</span></div>
-                <div class="check-item"><input type="checkbox" id="chk-conclusion" disabled> <span><strong>উপসংহার অংশ:</strong> সমাপ্তি অনুচ্ছেদ চিহ্নিত।</span></div>
-            </div>
-            <button class="btn" onclick="finishCompositionGrade()">প্রবন্ধ জমা দিন</button>
-            <div id="comp-final-feedback" style="display:none; margin-top:15px;" class="pane"></div>
-        </div>
-    </div>
-
-    <script>
-        function switchSection(sectionId) {
-            document.querySelectorAll('.engine-space').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-tabs .tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        const masterQuestionBank = [
-            { q: "ড. সুনীতিকুমার চট্টোপাধ্যায়ের সংজ্ঞা অনুযায়ী, ভাষার মূল উপাদান কোনটি যা বাক্যে প্রযুক্ত হয়?", options: ["ইশারা বা অঙ্গভঙ্গি", "বাগ্যন্ত্রের সাহায্যে উচ্চারিত অর্থপূর্ণ শব্দসমষ্টি", "পশু-পাখির স্বাভাবিক ডাক", "লৈখিক চিহ্নের জ্যামিতিক নকশা"], correct: 1 },
-            { q: "পৃথিবীতে বর্তমানে প্রায় কতগুলো ভাষা প্রচলিত আছে বলে বইয়ে উল্লেখ আছে?", options: ["প্রায় আড়াই হাজার", "প্রায় সাড়ে তিন হাজার", "প্রায় চার হাজার", "প্রায় পাঁচ হাজার"], correct: 1 },
-            { q: "মাতৃভাষার বিবেচনায় সারা বিশ্বে বাংলা ভাষার স্থান কততম?", options: ["চতুর্থ", "পঞ্চম", "ষষ্ঠ", "সপ্তম"], correct: 2 },
-            { q: "গণপ্রজাতন্ত্রী বাংলাদেশের সংবিধানের কোন ভাগের কত অনুচ্ছেদে রাষ্ট্রভাষা বাংলার কথা লিপিবদ্ধ আছে?", options: ["প্রথম ভাগের দ্বিতীয় অনুচ্ছেদ", "প্রথম ভাগের তৃতীয় অনুচ্ছেদ", "দ্বিতীয় ভাগের প্রথম অনুচ্ছেদ", "তৃতীয় ভাগের প্রথম অনুচ্ছেদ"], correct: 1 },
-            { q: "আঞ্চলিক ভাষার অপর নাম ব্যাকরণে কী দেওয়া হয়েছে?", options: ["প্রমিত ভাষা", "লেখ্য রূপ", "উপভাষা", "সাধু ভাষা"], correct: 2 },
-            { q: "কোন ভাষারীতি অধিকতর গাম্ভীর্যপূর্ণ, তৎসম শব্দবহুল এবং ক্রিয়াপদের রূপ প্রাচীন রীতি অনুসারী?", options: ["চলিত রীতি", "প্রমিত কথ্য রীতি", "সাধু ভাষারীতি", "আঞ্চলিক রীতি"], correct: 2 },
-            { q: "বাংলা ভাষায় মৌলিক স্বরধ্বনি কয়টি?", options: ["১১টি", "৭টি", "৩৯টি", "৫০টি"], correct: 1 },
-            { q: "বাংলা বর্ণমালায় মোট কয়টি বর্ণ রয়েছে এবং এর মধ্যে স্বরবর্ণ কয়টি?", options: ["৫০টি বর্ণ, ১১টি স্বরবর্ণ", "৩৯টি বর্ণ, ৭টি স্বরবর্ণ", "৫০টি বর্ণ, ১০টি স্বরবর্ণ", "৪৯টি বর্ণ, ১১টি স্বরবর্ণ"], correct: 0 },
-            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, 六টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
-            { q: "উচ্চারণস্থান অনুসারে 'ঋ, ট, ঠ, ড, ঢ, ণ, র, ল' বর্ণগুলোকে কী বলা হয়?", options: ["তালব্য বর্ণ", "ওষ্ঠ্য বর্ণ", "মূর্ধন্য বর্ণ", "দন্ত্য বর্ণ"], correct: 2 },
-            { q: "পদের প্রথমে ম-ফলা থাকলে উচ্চারণের ওপর কী প্রভাব পড়ে?", options: ["বর্ণটির দ্বিত্ব উচ্চারণ হয়", "বর্ণের উচ্চারণে কিছুটা ঝোঁক পড়ে এবং সামান্য নাসিক্যস্বর হয়", "ম-এর উচ্চারণ সম্পূর্ণ অক্ষুণ্ণ থাকে", "উচ্চারণ লোপ পেয়ে ও-কার হয়"], correct: 1 },
-            { q: "পাশাপাশি অবস্থিত দুটো ধ্বনির মিলনের ফলে যদি এক ধ্বনি সৃষ্টি হয়, তাকে কী বলে?", options: ["কার", "ফলা", "সন্ধি", "সমাস"], correct: 2 },
-            { q: "সন্ধি প্রধানত কয় ধরনের হয়ে থাকে?", options: ["দুই ধরনের (স্বর ও ব্যঞ্জন)", "তিন ধরনের", "চার ধরনের", "পাঁচ ধরনের"], correct: 0 },
-            { q: "ক্রিয়াপদের মূল অংশকে কী বলা হয় যা বিশ্লেষণ করা যায় না?", options: ["উপসর্গ", "ধাতু", "নির্দেশক", "অনুকার"], correct: 1 },
-            { q: "ক্রিয়া সম্পাদনের সময়কে কী বলা হয়?", options: ["ক্রিয়ার ভাব", "ক্রিয়ার কাল", "ক্রিয়ার রূপ", "ধাতুর গঠন"], correct: 1 }
-        ];
-
-        const funFacts = [
-            "তত্ত্ব: বাংলা ভাষার বয়স ১০০০ বছরেরও বেশি এবং এটি প্রবহমান নদীর মতো পরিবর্তনশীল গদ্যরূপ ধারণ করেছে।",
-            "তত্ত্ব: বাংলা বর্ণমালায় পূর্ণমাত্রার বর্ণ ৩২টি, অর্ধমাত্রার বর্ণ ৮টি এবং মাত্রাহীন বর্ণ ১০টি।",
-            "তত্ত্ব: ড. সুনীতিকুমার চট্টোপাধ্যায়ের বিখ্যাত ODBL গ্রন্থ বাংলা ভাষার উৎপত্তির ইতিহাস বৈজ্ঞানিকভাবে প্রমাণ করে।",
-            "তত্ত্ব: সাধু ভাষারীতি কেবল লেখার গদ্যে ব্যবহৃত হতো; নাটকের সংলাপ ও বক্তৃতায় এটি অনুপযোগী।"
-        ];
-
-        const compositionsList = [
-            "৫.১ বাংলাদেশের ষড়ঋতু", "৫.২ বাংলা নববর্ষ", "৫.৩ বিজয় দিবস", 
-            "৫.৪ ট্রেনে ভ্রমণ", "৫.৫ মুক্তিযুদ্ধ জাদুঘর", "৫.৬ আমার ছেলেবেলা", "৫.৭ বাংলাদেশের কৃষক"
-        ];
-
-        const summaryData = {
-            story: {
-                text: "সারাংশ অনুচ্ছেদ: 'প্রকৃত জ্ঞানের অধিকারী ব্যক্তি কখনো অহংকার করেন না। যেমন ফলভর্তি গাছের শাখা সবসময় নিচের দিকে নুয়ে থাকে, তেমনি গুণী মানুষও সমাজের বুকে মাথা নিচু করে বিনয়ী থাকেন।'",
-                keywords: ["ज्ञान", "বিনয়", "অহংকার", "গুণী"]
-            },
-            poem: {
-                text: "সারমর্ম কবিতা চরণ: \n'পরের কারণে স্বার্থ দিয়া বলি\nএ জীবন মন সকলি দাও,\nতার চেয়ে সুখ কিছু নাই আর\nআপনার কথা ভুলিয়া যাও।'",
-                keywords: ["পরোপকার", "সুখ", "ত্যাগ", "স্বার্থ"]
+        let matchingKeywords = 0;
+        officialWords.forEach(word => {
+            const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()‘]/g,"");
+            if (cleanWord.length > 1 && userText.includes(cleanWord)) {
+                matchingKeywords++;
             }
-        };
+        });
 
-        const expansionGuides = {
-            "3.1": "বিশ্লেষণ: পরিশ্রমই মানুষের ভাগ্যের নিয়ন্তা। অলসতা উন্নতির প্রধান অন্তরায়। জীবনের প্রতিটি ক্ষেত্রে সফলতার মূল চাবিকাঠি হলো নিরবচ্ছিন্ন শ্রম ও নিষ্ঠা।",
-            "3.2": "বিশ্লেষণ: কোনো ব্যক্তি যতই শিক্ষিত বা পণ্ডিত হোক না কেন, সে যদি অসৎ চরিত্রের অধিকারী হয়, তবে তাকে বর্জন করা শ্রেয়। মণিধারী সাপও অনিষ্টকারী হতে পারে।",
-            "3.3": "বিশ্লেষণ: স্বদেশের প্রতি গভীর ভালোবাসাই প্রকৃত মানুষের ধর্ম। দেশের আলো-বাতাসে লালিত হয়ে তার প্রতি কৃতজ্ঞ থাকা ও সেবায় আত্মনিয়োগ করা মনুষ্যত্বের পরিচায়ক।",
-            "3.4": "বিশ্লেষণ: অন্যায় করা যেমন অপরাধ, অন্যায়কে নীরবে সহ্য করাও সমমানের অপরাধ। অন্যায়ের বিরুদ্ধে প্রতিবাদ না করলে সমাজে নেতিবাচক শক্তির বিস্তার ঘটে।",
-            "3.5": "বিশ্লেষণ: মানবসমাজে সবচেয়ে বড় ভূষণ হলো জ্ঞান। জ্ঞান অর্জনের মাধ্যমে মানুষ নিজেকে এবং সমাজকে উন্নত ও প্রগতিশীল স্তরে উন্নীত করতে সক্ষম হয়।"
-        };
+        // Evaluation parameters
+        const keywordMatchRatio = matchingKeywords / officialWords.length;
+        let finalScore = Math.round(keywordMatchRatio * 100);
 
-        const comprehensionQuestions = [
-            { q: "১. অনুচ্ছেদ অনুসারে প্রাতিষ্ঠানিক শিক্ষার প্রথম উপযোগটি কী?", keywords: ["জ্ঞান", "পরিবেশন"], pts: 1 },
-            { q: "২. সমৃদ্ধ জাতিগঠন কীভাবে সম্ভব হতে পারে?", keywords: ["দক্ষ", "মানবসম্পদ"], pts: 1 },
-            { q: "৩. মানবিক সমাজ নিশ্চিত করার প্রধান অবলম্বন কী?", keywords: ["প্রাতিষ্ঠানিক", "শিক্ষা"], pts: 1 },
-            { q: "৪. অনুচ্ছেদের মূল ভাবটির আলোকে শিক্ষা ও সমাজ গঠনের সম্পর্ক ব্যাখ্যা করো।", keywords: ["বিজ্ঞানমনস্ক", "উপযোগ", "সমাজ"], pts: 2 }
-        ];
-
-        let currentQuestions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let selectedOptionIndex = null;
-        let wrongAnswersTracker = [];
-        let isMistakeFixMode = false;
-
-        // Comprehension State Variables
-        let compIndex = 0;
-        let compScore = 0;
-        let compStage = 'question'; 
-
-        function initQuiz() {
-            currentQuestions = [...masterQuestionBank];
-            currentIndex = 0;
-            score = 0;
-            wrongAnswersTracker = [];
-            isMistakeFixMode = false;
-            document.getElementById("quiz-card").style.display = "block";
-            document.getElementById("result-card").style.display = "none";
-            document.getElementById("review-btn").style.display = "inline-block";
-            loadQuestion();
+        // Adjusting score based on standard constraints
+        if (userWords.length < 10) {
+            finalScore = Math.max(10, finalScore - 30);
+        } else if (userWords.length > officialWords.length * 2) {
+            finalScore = Math.max(20, finalScore - 20);
         }
 
-        function loadQuestion() {
-            selectedOptionIndex = null;
-            document.getElementById("feedback-box").style.display = "none";
-            document.getElementById("fact-box").style.display = "none";
-            
-            const actionBtn = document.getElementById("action-btn");
-            actionBtn.innerText = "উত্তর জমা দিন";
-            actionBtn.onclick = checkAnswer;
+        if (finalScore > 100) finalScore = 100;
+        if (finalScore < 0) finalScore = 0;
 
-            const currentQ = currentQuestions[currentIndex];
-            if (!isMistakeFixMode) {
-                document.getElementById("question-count").innerText = `প্রশ্ন: ${currentIndex + 1} / ${currentQuestions.length}`;
-            } else {
-                document.getElementById("question-count").innerText = `ত্রুটি সংশোধন: ${currentIndex + 1} / ${currentQuestions.length}`;
-            }
-            document.getElementById("score-count").innerText = `স্কোর: ${score}`;
-            
-            const percent = (currentIndex / currentQuestions.length) * 100;
-            document.getElementById("progress-fill").style.width = `${percent}%`;
-            document.getElementById("question-text").innerText = currentQ.q;
-
-            const optionsContainer = document.getElementById("options-container");
-            optionsContainer.innerHTML = "";
-
-            currentQ.options.forEach((optionText, idx) => {
-                const label = document.createElement("label");
-                label.className = "option";
-                label.innerHTML = `<input type="radio" name="quiz-option" value="${idx}"> ${optionText}`;
-                label.onclick = function() {
-                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-                    label.classList.add('selected');
-                    selectedOptionIndex = idx;
-                };
-                optionsContainer.appendChild(label);
-            });
+        // Feedback strings
+        let feedbackMessage = "";
+        if (finalScore >= 80) {
+            feedbackMessage = "চমৎকার! তোমার সারাংশটি মূল ভাবের খুবই কাছাকাছি এবং যথাযথ হয়েছে।";
+        } else if (finalScore >= 50) {
+            feedbackMessage = "ভালো চেষ্টা! তবে মূল উত্তরের কিছু গুরুত্বপূর্ণ শব্দ বা ভাব বাদ পড়েছে। আর একটু গুছিয়ে লেখার চেষ্টা করো।";
+        } else {
+            feedbackMessage = "সারাংশটি আশানুরূপ হয়নি। মূল অনুচ্ছেদটি আবার ভালো করে পড়ো এবং মূল শব্দগুলো ব্যবহার করার চেষ্টা করো।";
         }
 
-        function checkAnswer() {
-            if (selectedOptionIndex === null) { alert("অনুগ্রহ করে একটি উত্তর নির্বাচন করুন।"); return; }
-            const currentQ = currentQuestions[currentIndex];
-            const feedbackBox = document.getElementById("feedback-box");
-            
-            if (selectedOptionIndex === currentQ.correct) {
-                score++;
-                feedbackBox.className = "feedback correct";
-                feedbackBox.innerText = "সঠিক উত্তর। আপনার নির্বাচন যথার্থ হয়েছে।";
-            } else {
-                if (!isMistakeFixMode) wrongAnswersTracker.push(currentQ);
-                feedbackBox.className = "feedback wrong";
-                feedbackBox.innerText = `ভুল উত্তর। সঠিক উত্তর: ${currentQ.options[currentQ.correct]}`;
-            }
-            feedbackBox.style.display = "block";
-            document.getElementById("score-count").innerText = `স্কোর: ${score}`;
+        // Display updates
+        document.getElementById("scoreValue").innerText = finalScore;
+        document.getElementById("feedback").innerText = feedbackMessage;
+        document.getElementById("result").style.display = "block";
+    }
 
-            if ((currentIndex + 1) % 4 === 0) {
-                const factBox = document.getElementById("fact-box");
-                factBox.innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
-                factBox.style.display = "block";
-            }
+    // Run layout execution immediately on load
+    window.onload = loadStory;
+</script>
 
-            const actionBtn = document.getElementById("action-btn");
-            actionBtn.innerText = "পরবর্তী প্রশ্ন";
-            actionBtn.onclick = nextQuestion;
-        }
-
-        function nextQuestion() {
-            currentIndex++;
-            if (currentIndex < currentQuestions.length) loadQuestion();
-            else showFinalResults();
-        }
-
-        function showFinalResults() {
-            document.getElementById("quiz-card").style.display = "none";
-            document.getElementById("result-card").style.display = "block";
-            document.getElementById("final-score").innerText = `${score} / ${currentQuestions.length}`;
-            const verdictMsg = document.getElementById("verdict-msg");
-            
-            if (isMistakeFixMode) {
-                if (score === currentQuestions.length) {
-                    verdictMsg.className = "status-msg status-good";
-                    verdictMsg.innerText = "সংশোধন সম্পন্ন। সকল ভুল উত্তর সফলভাবে সংশোধন করা হয়েছে।";
-                    document.getElementById("review-btn").style.display = "none";
-                } else {
-                    verdictMsg.className = "status-msg status-bad";
-                    verdictMsg.innerText = "কিছু উত্তর এখনও ভুল রয়েছে। পুনরায় চেষ্টা করুন।";
-                }
-                return;
-            }
-
-            const performanceRatio = score / currentQuestions.length;
-            if (performanceRatio < 0.6) {
-                verdictMsg.className = "status-msg status-bad";
-                verdictMsg.innerText = "ফলাফল সন্তোষজনক নয়। ব্যাকরণ অংশে আরও অধ্যবসায় প্রয়োজন।";
-            } else if (performanceRatio < 0.85) {
-                verdictMsg.className = "status-msg status-good";
-                verdictMsg.innerText = "উত্তম ফলাফল। সামান্য ত্রুটিগুলো লক্ষ্য রাখলে আরও ভালো করা সম্ভব।";
-            } else {
-                verdictMsg.className = "status-msg status-good";
-                verdictMsg.innerText = "চমৎকার! আপনি এই অধ্যায়ের ব্যাকরণগত নিয়মগুলো সম্পূর্ণ আয়ত্ত করেছেন।";
-            }
-
-            const reviewBtn = document.getElementById("review-btn");
-            if (wrongAnswersTracker.length === 0) reviewBtn.style.display = "none";
-            else reviewBtn.innerText = `ভুলসমূহ সংশোধন করুন (${wrongAnswersTracker.length}টি অবশিষ্ট)`;
-        }
-
-        function startMistakeFix() {
-            if (wrongAnswersTracker.length === 0) return;
-            currentQuestions = [...wrongAnswersTracker];
-            currentIndex = 0;
-            score = 0;
-            isMistakeFixMode = true;
-            document.getElementById("quiz-card").style.display = "block";
-            document.getElementById("result-card").style.display = "none";
-            loadQuestion();
-        }
-        function resetQuiz() { initQuiz(); }
-
-        // MODULE 2: COMPREHENSION 4-QUESTION SYSTEM
-        function loadCompQuestion() {
-            document.getElementById("comp-feedback").style.display = "none";
-            document.getElementById("comp-answer").value = "";
-            
-            const currentQ = comprehensionQuestions[compIndex];
-            document.getElementById("comp-q-num").innerText = `প্রশ্ন: ${compIndex + 1} / ৪ (${currentQ.pts} নম্বর)`;
-            document.getElementById("comp-score-num").innerText = `স্কোর: ${compScore} / ৫`;
-            document.getElementById("comp-question-display").innerText = currentQ.q;
-            
-            const btn = document.getElementById("comp-next-btn");
-            btn.innerText = "উত্তর জমা দিন";
-            compStage = 'question';
-        }
-
-        function submitCompAnswer() {
-            const btn = document.getElementById("comp-next-btn");
-            const answer = document.getElementById("comp-answer").value.trim();
-            const feedback = document.getElementById("comp-feedback");
-            const currentQ = comprehensionQuestions[compIndex];
-
-            if (compStage === 'question') {
-                if (answer.length < 5) { alert("অনুগ্রহ করে একটি পূর্ণাঙ্গ উত্তর প্রদান করুন।"); return; }
-                
-                feedback.style.display = "block";
-                const isCorrect = currentQ.keywords.some(kw => answer.includes(kw));
-                
-                if (isCorrect) {
-                    compScore += currentQ.pts;
-                    feedback.className = "pane";
-                    feedback.style.borderColor = "#34d399";
-                    feedback.innerHTML = `🎯 <strong>সঠিক উত্তর!</strong> (+${currentQ.pts} পয়েন্ট)<br>মূল শব্দগুলো চিহ্নিত হয়েছে।`;
-                } else {
-                    feedback.className = "pane";
-                    feedback.style.borderColor = "#f87171";
-                    feedback.innerHTML = `⚠️ <strong>আংশিক/ভুল উত্তর।</strong> (+০ পয়েন্ট)<br>পরামর্শ: আপনার উত্তরে "${currentQ.keywords.join(', ')}" যুক্ত করা উচিত ছিল।`;
-                }
-                
-                document.getElementById("comp-score-num").innerText = `স্কোর: ${compScore} / ৫`;
-                btn.innerText = (compIndex < 3) ? "পরবর্তী প্রশ্ন" : "ফলাফল দেখুন";
-                compStage = 'feedback';
-            } else {
-                compIndex++;
-                if (compIndex < 4) {
-                    loadCompQuestion();
-                } else {
-                    document.getElementById("comp-engine").style.display = "none";
-                    document.getElementById("comp-result").style.display = "block";
-                    document.getElementById("comp-final-score").innerText = `${compScore} / ৫`;
-                }
-            }
-        }
-
-        function resetCompEngine() {
-            compIndex = 0;
-            compScore = 0;
-            document.getElementById("comp-engine").style.display = "block";
-            document.getElementById("comp-result").style.display = "none";
-            loadCompQuestion();
-        }
-
-        // MODULE 3: SUMMARY
-        let activeSummaryType = '';
-        function loadSummaryType(type) {
-            activeSummaryType = type;
-            document.getElementById("summary-prompt-area").style.display = "block";
-            document.getElementById("summary-text-pane").innerText = summaryData[type].text;
-            document.getElementById("summary-feedback").style.display = "none";
-            document.getElementById("summary-user-input").value = "";
-        }
-        function evaluateSummary() {
-            const input = document.getElementById("summary-user-input").value.trim();
-            const feedback = document.getElementById("summary-feedback");
-            if(input.length < 15) { alert("উত্তরের পরিধি বৃদ্ধি করুন (কমপক্ষে ১৫টি অক্ষর)।"); return; }
-            
-            const matched = summaryData[activeSummaryType].keywords.filter(kw => input.includes(kw));
-            feedback.style.display = "block";
-            feedback.className = "pane";
-            
-            if (matched.length >= 2) {
-                feedback.style.borderColor = "#34d399";
-                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন:</strong><br>আপনার সারাংশ কাঠামোগতভাবে সফল। মূল ভাবটি সঠিকভাবে প্রকাশ পেয়েছে।<br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
-            } else {
-                feedback.style.borderColor = "#f87171";
-                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ:</strong><br>মূল ভাবটি সম্পূর্ণ ফুটে ওঠেনি। অনুচ্ছেদের মূল উদ্দেশ্য এবং সারমর্মকে আরও গুরুত্ব সহকারে ফুটিয়ে তোলার চেষ্টা করুন।`;
-            }
-        }
-
-        // MODULE 4: BHABSHOMPROSHARON WITH RANDOMIZER
-        function loadExpansionPrompt() {
-            const code = document.getElementById("expansion-select").value;
-            if(!code) { document.getElementById("expansion-work-area").style.display = "none"; return; }
-            document.getElementById("expansion-work-area").style.display = "block";
-            document.getElementById("expansion-prompt-display").innerText = ` his নির্বাচিত चरण: ${document.getElementById("expansion-select").options[document.getElementById("expansion-select").selectedIndex].text}`;
-            document.getElementById("expansion-comparison").style.display = "none";
-            document.getElementById("expansion-user-input").value = "";
-        }
-
-        function randomizeExpansion() {
-            const selectEl = document.getElementById("expansion-select");
-            const validOptions = Array.from(selectEl.options).filter(opt => opt.value !== "");
-            const randomOpt = validOptions[Math.floor(Math.random() * validOptions.length)];
-            selectEl.value = randomOpt.value;
-            loadExpansionPrompt();
-        }
-
-        function evaluateExpansion() {
-            const code = document.getElementById("expansion-select").value;
-            const input = document.getElementById("expansion-user-input").value.trim();
-            if(input.length < 15) { alert("ভাব-সম্প্রসারণের বিবরণ প্রদান করুন।"); return; }
-            document.getElementById("expansion-comparison").style.display = "grid";
-            document.getElementById("expansion-user-pane").innerText = input;
-            document.getElementById("expansion-guide-pane").innerText = expansionGuides[code];
-        }
-
-        // MODULE 5: LETTERS
-        function loadLetter(page) {
-            document.getElementById("letter-work-area").style.display = "block";
-            document.getElementById("letter-feedback").style.display = "none";
-            document.getElementById("letter-user-input").value = "";
-            document.getElementById("letter-prompt-text").innerText = page === '102' ? "ব্যক্তিগত পত্র (পৃষ্ঠা ১০২): পরীক্ষায় প্রস্তুতির বিবরণ জানিয়ে বন্ধুর নিকট একটি পত্র লেখো।" : "আবেদন পত্র (পৃষ্ঠা ১০৬): বিনামূল্যে অধ্যয়নের সুযোগ চেয়ে প্রধান শিক্ষকের নিকট একখানা আবেদন পত্র লেখো।";
-        }
-        function checkLetterStructure() {
-            const input = document.getElementById("letter-user-input").value.trim();
-            const feedback = document.getElementById("letter-feedback");
-            feedback.style.display = "block";
-            let elements = [];
-            if(input.includes("তারিখ") || input.includes("/") || input.includes("২০২৬")) elements.push("তারিখ/স্থান");
-            if(input.includes("বরাবর") || input.includes("প্রিয়")) elements.push("সম্বোধন");
-            if(input.includes("ইতি") || input.includes("বিনীত")) elements.push("সমাপ্তি");
-            feedback.innerHTML = `📊 <strong>কাঠামো ট্র্যাকিং:</strong> পত্রে অত্যাবশ্যক উপাদান [${elements.join(', ')}] সনাক্ত হয়েছে।<br><br><em>স্মর্তব্য: পরীক্ষার খাতায় পত্রের নির্দিষ্ট ফরম্যাট বজায় রাখা জরুরি।</em>`;
-        }
-
-        // MODULE 6: COMPOSITION
-        let activeCompTitle = "";
-        function generateRandomCompositions() {
-            const shuffled = [...compositionsList].sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 3);
-            const space = document.getElementById("comp-options-space");
-            space.innerHTML = "";
-            selected.forEach(title => {
-                const div = document.createElement("div");
-                div.className = "comp-choice";
-                div.innerText = `প্রবন্ধ: ${title}`;
-                div.onclick = function() {
-                    activeCompTitle = title;
-                    document.getElementById("comp-writing-area").style.display = "block";
-                    document.getElementById("selected-comp-title").innerText = `নির্বাচিত রচনা: ${title}`;
-                    document.getElementById("comp-user-input").value = "";
-                    document.getElementById("comp-final-feedback").style.display = "none";
-                    updateCompChecklist();
-                };
-                space.appendChild(div);
-            });
-            document.getElementById("comp-writing-area").style.display = "none";
-        }
-        function updateCompChecklist() {
-            const text = document.getElementById("comp-user-input").value.trim();
-            document.getElementById("chk-intro").checked = text.length > 10 && (text.includes("ভূমিকা") || text.length > 15);
-            document.getElementById("chk-body").checked = text.length > 80;
-            document.getElementById("chk-conclusion").checked = text.length > 120 && (text.includes("উপসংহার") || text.includes("পরিশেষে"));
-        }
-        function finishCompositionGrade() {
-            const feedback = document.getElementById("comp-final-feedback");
-            feedback.style.display = "block";
-            const ok = document.getElementById("chk-intro").checked && document.getElementById("chk-body").checked && document.getElementById("chk-conclusion").checked;
-            if(!ok) {
-                feedback.innerHTML = "❌ <strong>কাঠামো ত্রুটি:</strong> প্রবন্ধের বিন্যাস সঠিক নয়। ভূমিকা, মূল অনুচ্ছেদ এবং উপসংহার স্পষ্ট রাখুন।";
-                feedback.style.borderColor = "#f87171";
-            } else {
-                feedback.innerHTML = "🏆 <strong>মূল্যায়ন:</strong> সফল বিন্যাস। ভূমিকা থেকে উপসংহার পর্যন্ত সকল প্যারাগ্রাফের গঠন সুবিন্যস্ত রয়েছে।";
-                feedback.style.borderColor = "#34d399";
-            }
-        }
-
-        // Initialize Engines
-        initQuiz();
-        loadCompQuestion();
-    </script>
 </body>
 </html>
