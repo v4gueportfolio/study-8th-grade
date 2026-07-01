@@ -500,11 +500,27 @@
         }
 
         // MODULE 3: SUMMARY
-        let activeSummaryType = '';
+        let activeSummaryKey = '';
         function loadSummaryType(type) {
-            activeSummaryType = type;
+            // Filter keys matching either 'story' or 'poem'.
+            // Note: Since 'poem' keys do not exist in the initial object, let's make sure we handle it gracefully,
+            // or we fall back to selecting any story if poem is empty.
+            let keys = Object.keys(summaryData).filter(k => k.startsWith(type));
+            if (keys.length === 0) {
+                // If poem selected but not populated in dataset, add dummy or use story
+                if (type === 'poem') {
+                    summaryData.poem_1 = {
+                        text: "আমাদের দেশে হবে সেই ছেলে কবে,\nকথায় না বড় হয়ে কাজে বড় হবে?\nমুখে হাসি বুকে বল তেজে ভরা মন,\n'মানুষ' হইতে হবে এই তার পণ।",
+                        summary: "কথার চেয়ে কাজের মাধ্যমে মানুষের পরিচয় গড়ে ওঠা উচিত। প্রতিজ্ঞাবদ্ধ হয়ে হাসি ও আত্মবিশ্বাস বজায় রেখে মানুষের কল্যাণ সাধনের জন্য চেষ্টা করতে হবে।"
+                    };
+                    keys = ['poem_1'];
+                } else {
+                    keys = Object.keys(summaryData);
+                }
+            }
+            activeSummaryKey = keys[Math.floor(Math.random() * keys.length)];
             document.getElementById("summary-prompt-area").style.display = "block";
-            document.getElementById("summary-text-pane").innerText = summaryData[type].text;
+            document.getElementById("summary-text-pane").innerText = summaryData[activeSummaryKey].text;
             document.getElementById("summary-feedback").style.display = "none";
             document.getElementById("summary-user-input").value = "";
         }
@@ -513,16 +529,20 @@
             const feedback = document.getElementById("summary-feedback");
             if(input.length < 15) { alert("উত্তরের পরিধি বৃদ্ধি করুন (কমপক্ষে ১৫টি অক্ষর)।"); return; }
             
-            const matched = summaryData[activeSummaryType].keywords.filter(kw => input.includes(kw));
             feedback.style.display = "block";
             feedback.className = "pane";
             
+            // Check keyword matching based on model summary words > 3 characters
+            const modelSummary = summaryData[activeSummaryKey].summary;
+            const modelWords = modelSummary.split(/[\s।,।]+/).filter(w => w.length > 2);
+            const matched = modelWords.filter(kw => input.includes(kw));
+            
             if (matched.length >= 2) {
                 feedback.style.borderColor = "#34d399";
-                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন:</strong><br>আপনার সারাংশ কাঠামোগতভাবে সফল। মূল ভাবটি সঠিকভাবে প্রকাশ পেয়েছে।<br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
+                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন:</strong><br>আপনার সারাংশ সফল হয়েছে। মূল ভাবটি প্রকাশ পেয়েছে।<br><br><span style='color:var(--text-muted);'>আদর্শ সারাংশ: ${modelSummary}</span>`;
             } else {
                 feedback.style.borderColor = "#f87171";
-                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ:</strong><br>মূল ভাবটি সম্পূর্ণ ফুটে ওঠেনি। অনুচ্ছেদের মূল উদ্দেশ্য এবং সারমর্মকে আরও গুরুত্ব সহকারে ফুটিয়ে তোলার চেষ্টা করুন।`;
+                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ:</strong><br>মূল ভাবটি সম্পূর্ণ ফুটে ওঠেনি। অনুচ্ছেদের মূল উদ্দেশ্য এবং সারমর্মকে আরও গুরুত্ব সহকারে ফুটিয়ে তোলার চেষ্টা করুন।<br><br><span style='color:var(--text-muted);'>আদর্শ সারাংশ: ${modelSummary}</span>`;
             }
         }
 
