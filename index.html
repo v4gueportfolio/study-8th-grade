@@ -71,15 +71,17 @@
     <h1>Shafir's Study Hall</h1>
     <div class="subtitle">৮ম শ্রেণি — বাংলা ২য় পত্র (একাডেমিক ড্যাশবোর্ড)</div>
 
+    <!-- GLOBAL TABS SYSTEM -->
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchSection('mcq-section')">ব্যাকরণ কুইজ (১৫টি এমসিকিউ)</button>
         <button class="tab-btn" onclick="switchSection('comprehension-section')">অনুধাবন (পৃষ্ঠা ৯২)</button>
-        <button class="tab-btn" onclick="switchSection('summary-section')">সারাংশ (পৃষ্ঠা ৯৩-৯৭)</button>
-        <button class="tab-btn" onclick="switchSection('expansion-section')">भाव-সম্প্রসারণ (পৃষ্ঠা ৯৭)</button>
+        <button class="tab-btn" onclick="switchSection('summary-section')">সারাংশ/সারমর্ম (পৃষ্ঠা ৯৩)</button>
+        <button class="tab-btn" onclick="switchSection('expansion-section')">ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭)</button>
         <button class="tab-btn" onclick="switchSection('letters-section')">পত্র রচনা (পৃষ্ঠা ১০২-১০৬)</button>
         <button class="tab-btn" onclick="switchSection('composition-section')">প্রবন্ধ রচনা (পৃষ্ঠা ১১২+)</button>
     </div>
 
+    <!-- MODULE 1: 15 MCQ QUIZ -->
     <div id="mcq-section" class="engine-space active">
         <div id="quiz-card" class="card">
             <div class="stats">
@@ -99,7 +101,7 @@
         </div>
 
         <div id="result-card" class="card result-screen">
-            <h2>মূল্যাंकन সম্পন্ন</h2>
+            <h2>मूल्यांकन সম্পন্ন</h2>
             <div class="score-big" id="final-score">০ / ১৫</div>
             <div id="verdict-msg" class="status-msg"></div>
             <button class="btn" id="review-btn" onclick="startMistakeFix()">ভুলসমূহ সংশোধন করুন</button>
@@ -107,6 +109,7 @@
         </div>
     </div>
 
+    <!-- MODULE 2: COMPREHENSION (PAGE 92) -->
     <div id="comprehension-section" class="card engine-space">
         <h3>অনুধাবন শক্তি ও প্রশ্নোত্তর (পৃষ্ঠা ৯২)</h3>
         <p style="color: var(--text-muted); font-size:0.9rem;">নিচের অনুচ্ছেদটি পাঠ করে ৪টি প্রশ্নের উত্তর ক্রমানুসারে প্রদান করো।</p>
@@ -129,35 +132,30 @@
         </div>
     </div>
 
+    <!-- MODULE 3: SUMMARY (PAGE 93) -->
     <div id="summary-section" class="card engine-space">
-        <h3>২. সারাংশ ও সারমর্ম (পৃষ্ঠা ৯৩-৯৭)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">ড্রপডাউন থেকে নির্দিষ্ট অনুচ্ছেদটি নির্বাচন করে সারাংশ অনুশীলন করো।</p>
-        
-        <select id="summary-select" onchange="loadSummaryPrompt()">
-            <option value="">-- অনুচ্ছেদ নির্বাচন করো --</option>
-            <option value="story_2_1">২.১ কিসের থেকে এসেছে আমাদের বাংলা ভাষা?</option>
-            <option value="story_2_2">২.২ আনন্দ প্রকাশ জীবনীশক্তির প্রবলতারই প্রকাশ</option>
-            <option value="story_2_3">২.৩ বাঙালি যেদিন ঐক্যবদ্ধ হয়ে বলতে পারবে</option>
-            <option value="story_2_4">২.৪ একজন মানুষ ভালো কি মন্দ আমরা তা বুঝতে পারি</option>
-            <option value="story_2_5">২.৫ সূর্যের আলোতে রাতের অন্ধকার কেটে যায়</option>
-        </select>
-
-        <div id="summary-prompt-area" style="display:none; margin-top:15px;">
-            <div class="pane-title">মূল পাঠ (বই থেকে):</div>
-            <div class="pane" id="summary-text-pane" style="margin-bottom:15px; font-size:1rem; background:#130b21; border-color:var(--border);"></div>
-            <strong>তোমার লেখা সারাংশ এখানে দাও:</strong>
-            <textarea id="summary-user-input" style="height:140px;" placeholder="মূল ভাবটি সংক্ষেপে ফুটিয়ে তোলো..."></textarea>
-            <button class="btn" onclick="evaluateSummary()">সারাংশ মূল্যায়ন করো</button>
+        <h3>সারাংশ ও সারমর্ম (পৃষ্ঠা ৯৩)</h3>
+        <p style="color: var(--text-muted); font-size:0.9rem;">অনুশীলনের জন্য একটি বিভাগ নির্বাচন করুন।</p>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('story')">সারাংশ (গদ্য)</button>
+            <button class="tab-btn" style="width:50%;" onclick="loadSummaryType('poem')">সারমর্ম (পদ্য)</button>
+        </div>
+        <div id="summary-prompt-area" style="display:none;">
+            <div class="pane" id="summary-text-pane" style="margin-bottom:15px; font-style:italic; font-size:1.05rem; background:#130b21; border-color:var(--border);"></div>
+            <strong>আপনার উত্তর লিখুন:</strong>
+            <textarea id="summary-user-input" style="height:150px;" placeholder="মূল ভাবটি সংক্ষেপে ফুটিয়ে তুলুন..."></textarea>
+            <button class="btn" onclick="evaluateSummary()">মূল্যায়ন করুন</button>
             <div id="summary-feedback" style="display:none; margin-top:15px;" class="pane"></div>
         </div>
     </div>
 
+    <!-- MODULE 4: EXPANSION (PAGE 97) -->
     <div id="expansion-section" class="card engine-space">
         <h3>ভাব-সম্প্রসারণ (পৃষ্ঠা ৯৭: ৩.১ - ৩.৫)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">ড্রপডাউন থেকে নির্বাচন করো অথবা র্যান্ডমাইজ বাটন চাপো।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">ড্রপডাউন থেকে নির্বাচন করুন অথবা র্যান্ডমাইজ বাটন চাপুন।</p>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
             <select id="expansion-select" style="width:70%;" onchange="loadExpansionPrompt()">
-                <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করো --</option>
+                <option value="">-- ভাব-সম্প্রসারণ নির্বাচন করুন --</option>
                 <option value="3.1">৩.১: "পরিশ্রম সৌভাগ্যের প্রসূতি"</option>
                 <option value="3.2">৩.২: "দুর্জন বিদ্বান হইলেও পরিত্যাজ্য"</option>
                 <option value="3.3">৩.৩: "স্বদেশপ্রেমই প্রকৃত মানুষের ধর্ম"</option>
@@ -183,9 +181,10 @@
         </div>
     </div>
 
+    <!-- MODULE 5: LETTERS (PAGE 102-106) -->
     <div id="letters-section" class="card engine-space">
         <h3>পত্র রচনা (পৃষ্ঠা ১০২-১০৬)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">পত্রের প্রকারভেদ অনুযায়ী কাঠামো ঠিক রেখে অনুশীলন করো।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">পত্রের প্রকারভেদ অনুযায়ী কাঠামো ঠিক রেখে অনুশীলন করুন।</p>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
             <button class="tab-btn" style="width:50%;" onclick="loadLetter('102')">ব্যক্তিগত পত্র (পৃষ্ঠা ১০২)</button>
             <button class="tab-btn" style="width:50%;" onclick="loadLetter('106')">আবেদন পত্র (পৃষ্ঠা ১০৬)</button>
@@ -198,9 +197,10 @@
         </div>
     </div>
 
+    <!-- MODULE 6: COMPOSITION (PAGE 112+) -->
     <div id="composition-section" class="card engine-space">
         <h3>প্রবন্ধ রচনা (পৃষ্ঠা ১১২+: র্যান্ডম ৩ সিলেকশন)</h3>
-        <p style="color: var(--text-muted); font-size:0.9rem;">প্রথম ৭টি রচনার মধ্য থেকে স্বয়ংক্রিয়ভাবে ৩টি বিকল্প দেওয়া হলো। যেকোনো একটি বেছে নাও।</p>
+        <p style="color: var(--text-muted); font-size:0.9rem;">প্রথম ৭টি রচনার মধ্য থেকে স্বয়ংক্রিয়ভাবে ৩টি বিকল্প দেওয়া হলো। যেকোনো একটি বেছে নিন।</p>
         <button class="btn" style="background:#130b21; color:#fff; border: 1px solid var(--border); margin-bottom:15px;" onclick="generateRandomCompositions()">৩টি প্রবন্ধ র্যান্ডমাইজ করুন</button>
         
         <div class="comp-options" id="comp-options-space"></div>
@@ -237,7 +237,7 @@
             { q: "কোন ভাষারীতি অধিকতর গাম্ভীর্যপূর্ণ, তৎসম শব্দবহুল এবং ক্রিয়াপদের রূপ প্রাচীন রীতি অনুসারী?", options: ["চলিত রীতি", "প্রমিত কথ্য রীতি", "সাধু ভাষারীতি", "আঞ্চলিক রীতি"], correct: 2 },
             { q: "বাংলা ভাষায় মৌলিক স্বরধ্বনি কয়টি?", options: ["১১টি", "৭টি", "৩৯টি", "৫০টি"], correct: 1 },
             { q: "বাংলা বর্ণমালায় মোট কয়টি বর্ণ রয়েছে এবং এর মধ্যে স্বরবর্ণ কয়টি?", options: ["৫০টি বর্ণ, ১১টি স্বরবর্ণ", "৩৯টি বর্ণ, ৭টি স্বরবর্ণ", "৫০টি বর্ণ, ১০টি স্বরবর্ণ", "৪৯টি বর্ণ, ১১টি স্বরবর্ণ"], correct: 0 },
-            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, ৬টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
+            { q: "ব্যঞ্জনবর্ণের সংক্ষিপ্ত রূপকে কী বলা হয় এবং এটি কয়টি আছে?", options: ["কার, ১০টি", "ফলা, 六টি", "ফলা, ৫টি", "অনুষঙ্গ, ৭টি"], correct: 1 },
             { q: "উচ্চারণস্থান অনুসারে 'ঋ, ট, ঠ, ড, ঢ, ণ, র, ল' বর্ণগুলোকে কী বলা হয়?", options: ["তালব্য বর্ণ", "ওষ্ঠ্য বর্ণ", "মূর্ধন্য বর্ণ", "দন্ত্য বর্ণ"], correct: 2 },
             { q: "পদের প্রথমে ম-ফলা থাকলে উচ্চারণের ওপর কী প্রভাব পড়ে?", options: ["বর্ণটির দ্বিত্ব উচ্চারণ হয়", "বর্ণের উচ্চারণে কিছুটা ঝোঁক পড়ে এবং সামান্য নাসিক্যস্বর হয়", "ম-এর উচ্চারণ সম্পূর্ণ অক্ষুণ্ণ থাকে", "উচ্চারণ লোপ পেয়ে ও-কার হয়"], correct: 1 },
             { q: "পাশাপাশি অবস্থিত দুটো ধ্বনির মিলনের ফলে যদি এক ধ্বনি সৃষ্টি হয়, তাকে কী বলে?", options: ["কার", "ফলা", "সন্ধি", "সমাস"], correct: 2 },
@@ -258,27 +258,26 @@
             "৫.৪ ট্রেনে ভ্রমণ", "৫.৫ মুক্তিযুদ্ধ জাদুঘর", "৫.৬ আমার ছেলেবেলা", "৫.৭ বাংলাদেশের কৃষক"
         ];
 
-        // REAL OFFICIAL SYLLABUS DATA POPULATED FROM IMAGES
         const summaryData = {
             story_2_1: {
-                text: "কোথা থেকে এসেছে আমাদের বাংলা ভাষা? ভাষা কি জন্ম নেয় মানুষের মতো? বা যেমন বীজ থেকে গাছ জন্মে তেমনভাবে জন্ম নেয় ভাষা? না, ভাষা মানুষ বা তরুর মতো জন্ম নেয় না। বাংলা ভাষাও মানুষ বা তরুর মতো জন্ম নেয়নি, কোনো কল্পিত স্বর্গ থেকেও আসেনি। এখন আমরা যে বাংলা ভাষা বলি এক হাজার বছর আগে তা ঠিক এমন ছিল না। সে-ভাষায় এ-দেশের মানুষ কথা বলত, গান গাইত, কবিতা বানাত। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। রূপ বদলে যায় শব্দের, বদল ঘটে অর্থের। অনেক দিন কেটে গেলে মনে হয় ভাষাটি একটি নতুন ভাষা হয়ে উঠেছে। আর সে-ভাষার বদল ঘটেই জন্ম হয়েছে বাংলা ভাষার।",
-                summary: "ভাষার ধর্মই হচ্ছে বদলে যাওয়া। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। শব্দেরও বদল ঘটে এবং সে সঙ্গে শব্দের অর্থেরও। হাজার বছরের পরিবর্তনের ধারাবাহিকতায় এমনিভাবেই আমাদের বাংলা ভাষার জন্ম হয়েছে।"
+               text: "কোথা থেকে এসেছে আমাদের বাংলা ভাষা? ভাষা কি জন্ম নেয় মানুষের মতো? বা যেমন বীজ থেকে গাছ জন্মে তেমনভাবে জন্ম নেয় ভাষা? না, ভাষা মানুষ বা তরুর মতো জন্ম নেয় না। বাংলা ভাষাও মানুষ বা তরুর মতো জন্ম নেয়নি, কোনো কল্পিত স্বর্গ থেকেও আসেনি। এখন আমরা যে বাংলা ভাষা বলি এক হাজার বছর আগে তা ঠিক এমন ছিল না। সে-ভাষায় এ-দেশের মানুষ কথা বলত, গান গাইত, কবিতা বানাত। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। রূপ বদলে যায় শব্দের, বদল ঘটে অর্থের। অনেক দিন কেটে গেলে মনে হয় ভাষাটি একটি নতুন ভাষা হয়ে উঠেছে। আর সে-ভাষার বদল ঘটেই জন্ম হয়েছে বাংলা ভাষার।",
+              summary: "ভাষার ধর্মই হচ্ছে বদলে যাওয়া। মানুষের মুখে মুখে বদলে যায় ভাষার ধ্বনি। শব্দেরও বদল ঘটে এবং সে সঙ্গে শব্দের অর্থেরও। হাজার বছরের পরিবর্তনের ধারাবাহিকতায় এমনিভাবেই আমাদের বাংলা ভাষার জন্ম হয়েছে।"
             },
             story_2_2: {
-                text: "আনন্দ প্রকাশ জীবনীশক্তির প্রবলতারই প্রকাশ। আমরা আনন্দকে ingrediens বা ইন্দ্রিয়ের মাধ্যমে রূপ-রস-শব্দ-স্পর্শ গন্ধ ইত্যাদির সাহায্যে উপলব্ধি করি। মানুষ যখন আনন্দ পায় তখন সে তার মনকে প্রকাশ করতে চায় – নানা রূপে। তাই সৃষ্টি হলো চিত্রশিল্পী, নৃত্যশিল্পী, সংগীতশিল্পী, কবি, সাহিত্যিক। পুরাকালের গুহামানুষ থেকে শুরু করে বর্তমান যুগ পর্যন্ত মানুষ নিজের পাওয়া আনন্দকে সুন্দরের অন্য মানুষের মধ্যে বিস্তার করতে চেয়েছে। তাই সৃষ্টি হয়েছে নানান আঙ্গিকের শিল্পকলা।",
-                summary: "মানুষের জীবনীশক্তির প্রকাশ ঘটে আনন্দে। তার সমস্ত ইন্দ্রিয় দিয়ে আনন্দকে সে উপলব্ধি করে। সেই আনন্দানুভূতি সবার কাছে জানাতে চায়। তাই ছবি, গান, কবিতা, নাচ, ভাস্কর্য ইত্যাদি শিল্পকলার মাধ্যমে মানুষ তার আনন্দকে প্রকাশ করে। এই আনন্দ ও সুন্দর বোধ মানুষের মনকে তৃপ্ত করে।"
+               text: "আনন্দ প্রকাশ জীবনীশক্তির প্রবলতারই প্রকাশ। আমরা আনন্দকে ইন্দ্রিয়ের মাধ্যমে রূপ-রস-শব্দ-স্পর্শ গন্ধ ইত্যাদির সাহায্যে উপলব্ধি করি। মানুষ যখন আনন্দ পায় তখন সে তার মনকে প্রকাশ করতে চায় – নানা রূপে। তাই সৃষ্টি হলো চিত্রশিল্পী, নৃত্যশিল্পী, সংগীতশিল্পী, কবি, সাহিত্যিক। পুরাকালের গুহামানুষ থেকে শুরু করে বর্তমান যুগ পর্যন্ত মানুষ নিজের পাওয়া আনন্দকে সুন্দরের অন্য মানুষের মধ্যে বিস্তার করতে চেয়েছে। তাই সৃষ্টি হয়েছে নানান আঙ্গিকের শিল্পকলা।",
+               summary: "মানুষের জীবনীশক্তির প্রকাশ ঘটে আনন্দে। তার সমস্ত ইন্দ্রিয় দিয়ে আনন্দকে সে উপলব্ধি করে। সেই আনন্দানুভূতি সবার কাছে জানাতে চায়। তাই ছবি, গান, কবিতা, নাচ, ভাস্কর্য ইত্যাদি শিল্পকলার মাধ্যমে মানুষ তার আনন্দকে প্রকাশ করে। এই আনন্দ ও সুন্দর বোধ মানুষের মনকে তৃপ্ত করে।"
             },
             story_2_3: {
-                text: "বাঙালি যেদিন ঐক্যবদ্ধ হয়ে বলতে পারবে – ‘বাঙালির বাংলা’ সেদিন তারা অসাধ্য সাধন করবে। বাঙালির মতো জ্ঞান-শক্তি ও প্রেম-শক্তি (ব্রেন সেন্টার ও হার্ট সেন্টার) এশিয়ায় কেন, বুঝি পৃথিবীতে কোনোজাতির নেই। কিন্তু কর্ম-শক্তি একেবারে নেই বলেই তাদের এই দিব্যশক্তি تمسাবৃত হয়ে আছে। তাদের কর্ম-বিমুখতা, জড়তা, মৃত্যুভয়, আলস্য, তন্দ্রা, নিদ্রা, ব্যবসা-বাণিজ্যে অনিচ্ছার কারণ। তারা তামসিকতায় আচ্ছন্ন হয়ে চেতনা-শক্তিকে হারিয়ে ফেলেছে। এই তমস, এই তিমির, এই জড়তাই অবিদ্যা। অবিদ্যা কেবল অন্ধকার পথে ভ্রান্তির পথে নিয়ে যায়; দিব্যশক্তিকে নিস্তেজ, মৃতপ্রায় করে রাখে।",
+                text: "বাঙালি যেদিন ঐক্যবদ্ধ হয়ে বলতে পারবে – ‘বাঙালির বাংলা’ সেদিন তারা অসাধ্য সাধন করবে। বাঙালির মতো জ্ঞান-শক্তি ও প্রেম-শক্তি (ব্রেন সেন্টার ও হার্ট সেন্টার) এশিয়ায় কেন, বুঝি পৃথিবীতে কোনো জাতির নেই। কিন্তু কর্ম-শক্তি একেবারে নেই বলেই তাদের এই দিব্যশক্তি তমসাবৃত হয়ে আছে। তাদের কর্ম-বিমুখতা, জড়তা, মৃত্যুভয়, আলস্য, তন্দ্রা, নিদ্রা, ব্যবসা-বাণিজ্যে অনিচ্ছার কারণ। তারা তামসিকতায় আচ্ছন্ন হয়ে চেতনা-শক্তিকে হারিয়ে ফেলেছে। এই তমস, এই তিমির, এই জড়তাই অবিদ্যা। অবিদ্যা কেবল অন্ধকার পথে ভ্রান্তির পথে নিয়ে যায়; দিব্যশক্তিকে নিস্তেজ, মৃতপ্রায় করে রাখে।",
                 summary: "বাঙালি প্রেম-শক্তি ও জ্ঞান-শক্তিতে অতুলনীয়। কিন্তু আলস্য তাদের দুর্বল করে রেখেছে। কর্মবিমুখতা আর কাজের প্রতি অনিহার জন্য তারা জগতের সবকিছুর থেকে পিছিয়ে আছে। এই আলস্য ও কর্ম বিমুখতাকে উপেক্ষা করে বাঙালিকে জেগে উঠতে হবে। তবেই এই জাতি প্রকৃত অর্থে বাঙালি হবে।"
             },
             story_2_4: {
                 text: "একজন মানুষ ভালো কি মন্দ আমরা তা বুঝতে পারি তার ব্যবহার দিয়ে। সে ভদ্র কি অভদ্র তাও বুঝতে পারি তার ব্যবহার দিয়ে। ব্যবহার ভালো হলে লোকে তাকে ভালো বলে। তাকে পছন্দ করে। ব্যবহার খারাপ হলে লোকে তাকে খারাপ বলে। তাকে অপছন্দ করে। তার সঙ্গে মিশতে চায় না। তার সঙ্গে কাজ করতে চায় না। তাকে কাছে রাখতে চায় না। তোমার ব্যবহার দিয়েই তোমার মনুষ্যত্বের পরিচয়।",
-                summary: "সুন্দর ব্যবহারের মধ্যেই মনুষ্যত্বের পরিচয় নিহিত। মানুষের আচার আচরণ, সততা ও আদর-কদর এর মধ্য দিয়েই সুন্দর ব্যবহারের প্রকাশ ঘটে। ভালো ব্যবহার দিয়ে সহজেই অপরের ভালোবাসা পাওয়া যায়। সুন্দর স্বভাবের মধ্যেই মানুষের সৌন্দর্য ফুটে ওঠে।"
+               summary: "সুন্দর ব্যবহারের মধ্যেই মনুষ্যত্বের পরিচয় নিহিত। মানুষের আচার আচরণ, সততা ও আদর-কদর এর মধ্য দিয়েই সুন্দর ব্যবহারের প্রকাশ ঘটে। ভালো ব্যবহার দিয়ে সহজেই অপরের ভালোবাসা পাওয়া যায়। সুন্দর স্বভাবের মধ্যেই মানুষের সৌন্দর্য ফুটে ওঠে।"
             },
             story_2_5: {
-                text: "সূর্যের আলোতে রাতের অন্ধকার কেটে যায়। শিক্ষার আলো আমাদের অজ্ঞতার অন্ধকার দূর করে। আমাদের দৃষ্টিতে চারপাশের জগৎ আরও সুন্দর হয়ে ওঠে। আমরা জীবনের নতুন অর্থ খুঁজে পাই; শিক্ষার আলো পেয়ে আমাদের ভেতরের মানুষটি জেগে ওঠে। আমরা বড় হতে চাই, বড় হওয়ার জন্য চেষ্টা করি। আমরা সুন্দর করে বাঁচতে চাই, বাঁচার মতো বাঁচতে চাই। আর সুন্দর করে বাঁচতে হলে চাই জ্ঞান। এই জ্ঞানকে কাজে লাগানো চাই। শিক্ষার ফলে আমাদের ভেতর যে শক্তি লুকানো থাকে তা ধীরে ধীরে জেগে ওঠে। আমরা মানুষ হয়ে উঠি।",
-                summary: "সূর্যের আলো যেমন অন্ধকার দূর করে, তেমনি শিক্ষার আলো মনের অন্ধকার দূর করে দেয়। আমাদের প্রত্যেকের ভেতরে শক্তি লুকানো থাকে। শিক্ষা এ শক্তির বিকাশে সাহায্য করে। শিক্ষার ফলে আমরা জ্ঞান ও দক্ষতা লাভ করে নিজের শক্তিকে কাজে লাগাই। যথার্থ মানুষ হয়ে উঠি।"
+              text: "সূর্যের আলোতে রাতের অন্ধকার কেটে যায়। শিক্ষার আলো আমাদের অজ্ঞতার অন্ধকার দূর করে। আমাদের দৃষ্টিতে চারপাশের জগৎ আরও সুন্দর হয়ে ওঠে। আমরা জীবনের নতুন অর্থ খুঁজে পাই; শিক্ষার আলো পেয়ে আমাদের ভেতরের মানুষটি জেগে ওঠে। আমরা বড় হতে চাই, বড় হওয়ার জন্য চেষ্টা করি। আমরা সুন্দর করে বাঁচতে চাই, বাঁচার মতো বাঁচতে চাই। আর সুন্দর করে বাঁচতে হলে চাই জ্ঞান। এই জ্ঞানকে কাজে লাগানো চাই। শিক্ষার ফলে আমাদের ভেতর যে শক্তি লুকানো থাকে তা ধীরে ধীরে জেগে ওঠে। আমরা মানুষ হয়ে উঠি।",
+               summary: "সূর্যের আলো যেমন অন্ধকার দূর করে, তেমনি শিক্ষার আলো মনের অন্ধকার দূর করে দেয়। আমাদের প্রত্যেকের ভেতরে শক্তি লুকানো থাকে। শিক্ষা এ শক্তির বিকাশে সাহায্য করে। শিক্ষার ফলে আমরা জ্ঞান ও দক্ষতা লাভ করে নিজের শক্তিকে কাজে লাগাই। যথার্থ মানুষ হয়ে উঠি।"
             }
         };
 
@@ -439,7 +438,7 @@
         }
         function resetQuiz() { initQuiz(); }
 
-        // MODULE 2: COMPREHENSION
+        // MODULE 2: COMPREHENSION 4-QUESTION SYSTEM
         function loadCompQuestion() {
             document.getElementById("comp-feedback").style.display = "none";
             document.getElementById("comp-answer").value = "";
@@ -500,64 +499,39 @@
             loadCompQuestion();
         }
 
-        // MODULE 3: SUMMARY PROCESSING ENGINE
-        function loadSummaryPrompt() {
-            const code = document.getElementById("summary-select").value;
-            if(!code) { document.getElementById("summary-prompt-area").style.display = "none"; return; }
+        // MODULE 3: SUMMARY
+        let activeSummaryType = '';
+        function loadSummaryType(type) {
+            activeSummaryType = type;
             document.getElementById("summary-prompt-area").style.display = "block";
-            document.getElementById("summary-text-pane").innerText = summaryData[code].text;
+            document.getElementById("summary-text-pane").innerText = summaryData[type].text;
             document.getElementById("summary-feedback").style.display = "none";
             document.getElementById("summary-user-input").value = "";
         }
-
         function evaluateSummary() {
-            const code = document.getElementById("summary-select").value;
             const input = document.getElementById("summary-user-input").value.trim();
             const feedback = document.getElementById("summary-feedback");
-            if(input.length < 15) { alert("সারাংশটি অত্যন্ত সংক্ষিপ্ত। পরিধি বৃদ্ধি করো।"); return; }
+            if(input.length < 15) { alert("উত্তরের পরিধি বৃদ্ধি করুন (কমপক্ষে ১৫টি অক্ষর)।"); return; }
             
+            const matched = summaryData[activeSummaryType].keywords.filter(kw => input.includes(kw));
             feedback.style.display = "block";
             feedback.className = "pane";
             
-            const officialSummary = summaryData[code].summary;
-            const userWords = input.split(/\s+/);
-            const officialWords = officialSummary.split(/\s+/);
-            
-            let matchingKeywords = 0;
-            officialWords.forEach(word => {
-                const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()‘]/g,"");
-                if (cleanWord.length > 1 && input.includes(cleanWord)) {
-                    matchingKeywords++;
-                }
-            });
-
-            const keywordMatchRatio = matchingKeywords / officialWords.length;
-            let finalScore = Math.round(keywordMatchRatio * 100);
-
-            if (userWords.length < 10) {
-                finalScore = Math.max(10, finalScore - 30);
-            } else if (userWords.length > officialWords.length * 2) {
-                finalScore = Math.max(20, finalScore - 20);
-            }
-
-            if (finalScore > 100) finalScore = 100;
-            if (finalScore < 0) finalScore = 0;
-
-            if (finalScore >= 75) {
+            if (matched.length >= 2) {
                 feedback.style.borderColor = "#34d399";
-                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন: স্কোর ${finalScore}/১০০</strong><br>চমৎকার! তোমার লেখা সারাংশটি মূল বইয়ের নির্ধারিত ভাব ও মূল শব্দাবলি সফলভাবে ধারণ করেছে।`;
+                feedback.innerHTML = `🎯 <strong>মূল্যায়ন সম্পন্ন:</strong><br>আপনার সারাংশ কাঠামোগতভাবে সফল। মূল ভাবটি সঠিকভাবে প্রকাশ পেয়েছে।<br><br><span style='color:var(--text-muted);'>পরামর্শ: মূল ভাবটিকে অনধিক ৩-৪ বাক্যে নিজের ভাষায় গুছিয়ে শেষ করুন।</span>`;
             } else {
                 feedback.style.borderColor = "#f87171";
-                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ: স্কোর ${finalScore}/১০০</strong><br>মূল অনুচ্ছেদের কিছু মূল ভাব বা শব্দ বাদ পড়েছে। বইয়ের মূল উত্তরটির বিন্যাস অনুসরণ করে আবার চেষ্টা করো।`;
+                feedback.innerHTML = `⚠️ <strong>মূল্যায়ন বিশ্লেষণ:</strong><br>মূল ভাবটি সম্পূর্ণ ফুটে ওঠেনি। অনুচ্ছেদের মূল উদ্দেশ্য এবং সারমর্মকে আরও গুরুত্ব সহকারে ফুটিয়ে তোলার চেষ্টা করুন।`;
             }
         }
 
-        // MODULE 4: BHABSHOMPROSHARON
+        // MODULE 4: BHABSHOMPROSHARON WITH RANDOMIZER
         function loadExpansionPrompt() {
             const code = document.getElementById("expansion-select").value;
             if(!code) { document.getElementById("expansion-work-area").style.display = "none"; return; }
             document.getElementById("expansion-work-area").style.display = "block";
-            document.getElementById("expansion-prompt-display").innerText = `নির্বাচিত চরণ: ${document.getElementById("expansion-select").options[document.getElementById("expansion-select").selectedIndex].text}`;
+            document.getElementById("expansion-prompt-display").innerText = ` his নির্বাচিত चरण: ${document.getElementById("expansion-select").options[document.getElementById("expansion-select").selectedIndex].text}`;
             document.getElementById("expansion-comparison").style.display = "none";
             document.getElementById("expansion-user-input").value = "";
         }
